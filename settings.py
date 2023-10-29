@@ -1,11 +1,9 @@
-import math
-import pygame as pg
+# Desc: Arquivo de configurações do jogo
 
-RUST = False
 FastMath = True  # Gambiarra para ganhar speed
 
 
-RES = (800, 600)  # 1280, 720   1366, 736   1260, 736  120, 100
+RES = (1280, 720)  # 1280, 720   1366, 736   1260, 736  120, 100
 
 FPS = 60
 

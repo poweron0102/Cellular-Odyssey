@@ -1,16 +1,4 @@
-from numba import njit, typeof, jit
-
-# from map import *
-from settings import *
-from functions import *
-import numpy as np
-import functools
-
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from main import Game
-    from in_game import InGame
+from main import *
 
 
 @njit(fastmath=FastMath)
@@ -116,7 +104,7 @@ def cast_floor(
         fish = np.cos(np.deg2rad(id_x / (RenderWidth / FOV) - HalfFOV))
 
         c_height = HalfRenderHeight - walls_height[id_x//2]//2
-        #if c_height > HalfRenderHeight:
+        # if c_height > HalfRenderHeight:
         #    c_height = HalfRenderHeight
         for id_y in range(c_height):
             n = Tile_size * (HalfRenderWidth / (HalfRenderHeight - id_y)) / fish

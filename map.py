@@ -1,13 +1,4 @@
-import pygame as pg
-import numpy as np
-from pygame import Surface
-from settings import *
-from textures import *
-
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from main import *
+from main import *
 
 
 class Tile:
@@ -24,7 +15,7 @@ class Map:
             self, game, world_map,
             tile_set: list[Tile], texture_set: list['None | Texture'], texture_floor: list[str]
     ):
-        self.game: 'InGame' = game
+        self.game: InGame = game
 
         self.tile_set: list[Tile] = tile_set
         self.tiles_to_render: list[int] = [tile_id for tile_id, tile in enumerate(tile_set) if tile.render]

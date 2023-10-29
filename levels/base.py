@@ -1,21 +1,4 @@
-# noinspection PyUnreachableCode
-if False:
-    from ..in_game import *
-    from ..main import *
-    from ..map import Tile
-    from ..textures import Texture
-    from ..actions import add_action
-else:
-    # noinspection PyUnresolvedReferences
-    from in_game import *
-    # noinspection PyUnresolvedReferences
-    from main import *
-    # noinspection PyUnresolvedReferences
-    from map import Tile
-    # noinspection PyUnresolvedReferences
-    from textures import Texture
-    # noinspection PyUnresolvedReferences
-    from actions import add_action
+from main import *
 
 
 @add_action

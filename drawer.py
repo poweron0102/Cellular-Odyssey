@@ -1,13 +1,5 @@
-import numpy as np
-import pygame as pg
-from numba import njit, jit, prange
+from main import *
 from time import sleep
-from settings import *
-from functions import *
-
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from main import Game
 
 Draw_functions = []
 Overwrites = []

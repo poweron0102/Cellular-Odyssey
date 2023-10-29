@@ -1,16 +1,23 @@
 import sys
 from types import ModuleType
-from player import *
-from ray_caster import *
-from actions import *
-from sprites import *
-from drawer import *
-from dialogue import *
+from importlib import import_module
+import pygame as pg
+import numpy as np
+from numba import njit
+import math
+
+from settings import *
+from functions import *
+from in_game import *
 from textures import *
 from parallax import *
-from in_game import *
 from map import *
-from importlib import import_module
+from player import *
+from ray_caster import *
+from dialogue import *
+from sprites import *
+from drawer import *
+from actions import *
 
 
 def check_events():

@@ -1,11 +1,7 @@
-import numpy as np
 import pygame as pg
 from pygame import Surface
 
-from numba.experimental import jitclass
 
-
-# @jitclass()
 class Texture:
     def __init__(self, name: str):
         name = name.split()
