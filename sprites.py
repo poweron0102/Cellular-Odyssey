@@ -48,7 +48,7 @@ class Sprite:
 
 class SpriteHandler:
     def __init__(self, game):
-        self.game: Game = game
+        self.game: InGame = game
         self.sprites: list[Sprite] = []
 
     def update(self):

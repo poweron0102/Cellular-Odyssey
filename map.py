@@ -1,3 +1,5 @@
+import numpy as np
+
 from main import *
 
 
@@ -15,10 +17,12 @@ class Map:
             self, game, world_map,
             tile_set: list[Tile], texture_set: list['None | Texture'], texture_floor: list[str]
     ):
-        self.game: InGame = game
+        self.game: 'InGame' = game
 
         self.tile_set: list[Tile] = tile_set
-        self.tiles_to_render: list[int] = [tile_id for tile_id, tile in enumerate(tile_set) if tile.render]
+        self.tiles_to_render = np.array(
+            [tile_id for tile_id, tile in enumerate(tile_set) if tile.render], dtype=np.uint8
+        )
         self.texture_set: list[Texture] = texture_set
 
         self.world_wall: list[list[int]] = world_map[0]
@@ -46,7 +50,9 @@ class Map:
             return 0
 
     def update_tiles_to_render(self):
-        self.tiles_to_render: list[int] = [tile_id for tile_id, tile in enumerate(self.tile_set) if tile.render]
+        self.tiles_to_render = np.array(
+            [tile_id for tile_id, tile in enumerate(self.tile_set) if tile.render], dtype=np.uint8
+        )
 
     def is_wall(self, x, y) -> bool:
         return self.tile_set[self.get_tile(x, y)].is_wall

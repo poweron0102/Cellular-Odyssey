@@ -1,7 +1,7 @@
 # Desc: Arquivo de configurações do jogo
+import pygame as pg
 
 FastMath = True  # Gambiarra para ganhar speed
-
 
 RES = (1280, 720)  # 1280, 720   1366, 736   1260, 736  120, 100
 
@@ -26,7 +26,6 @@ Sprite_Ren_dist = 2048
 
 Mine_Map_zoom = 24
 Mini_Map_position = (2 * Mine_Map_zoom, RES[1] - 13 * Mine_Map_zoom)
-
 
 RenderWidth = RES[0]
 HalfRenderWidth = RenderWidth // 2

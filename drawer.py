@@ -31,13 +31,11 @@ def draw_order(to_draw):
 
 class Drawer:
     def __init__(self, game):
-        self.game: Game = game
+        self.game: InGame = game
         self.screen = game.screen
         self.to_draw = []
 
     def update(self):
-        # self.screen.fill([0, 0, 0])  # preto
-        # print(self.to_draw[0])
         self.to_draw.sort(reverse=True, key=draw_order)
         if self.game.player.debug:
             for func_id, item in self.to_draw:

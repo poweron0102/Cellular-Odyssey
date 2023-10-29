@@ -33,7 +33,7 @@ class Game:
     def __init__(self):
         pg.init()
         pg.font.init()
-        self.screen = pg.display.set_mode(RES, pg.RESIZABLE)
+        self.screen = pg.display.set_mode(RES)
         self.clock = pg.time.Clock()
         self.time = pg.time.get_ticks()
         self.lest_time = pg.time.get_ticks()
@@ -47,7 +47,7 @@ class Game:
 
     def update(self):
         pg.display.flip()
-        self.screen.fill([0, 0, 0])  # preto
+        self.screen.fill((0, 0, 0))  # preto
         self.clock.tick(FPS)
         self.lest_time = self.time
         self.time = pg.time.get_ticks()
