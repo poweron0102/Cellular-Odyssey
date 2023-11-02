@@ -3,7 +3,15 @@ import pygame as pg
 
 FastMath = True  # Gambiarra para ganhar speed
 
-RES = (1280, 720)  # 1280, 720   1366, 736   1260, 736  120, 100
+
+RES = (1920, 1080)
+SCALE_RES = (RES[0]/1280, RES[1]/720)
+#  ['800x600', '640x360', '1280x720', '1920x1080']
+FULLSCREEN = False
+VOLUME = 100.0
+SCALE = 2
+
+
 
 FPS = 60
 
@@ -18,7 +26,6 @@ NumThreads = 2
 
 Texture_Res = 128
 Tile_size = 64
-SCALE = 2
 FOV = 60
 
 Render_dist = 20

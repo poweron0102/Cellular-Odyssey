@@ -1,25 +1,24 @@
-import pygame as pg
 from pygame import SurfaceType
 
-from settings import *
+from main import *
 
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from main import Game
 
 class Dialogue:
     def __init__(self, time, dialogue: str, speaker: str, audio=None, font='fonts/Roboto-Thin.ttf', size=25,
                  name_size=18):
         self.frame_x = 0
-        self.frame_y = 490
+        self.frame_y = 490 * SCALE_RES[1]
 
-        self.font = pg.font.Font(font, size)
+        self.font = pg.font.Font(font, int(size * SCALE_RES[0] + 0.5))
         self.name_font = pg.font.Font(font, name_size)
         name_img = self.name_font.render(speaker, False, [0, 0, 0], None)
 
         self.image = pg.image.load("assets/dialogue/frame.png").convert_alpha()
+
         speaker = pg.image.load(f"assets/dialogue/{speaker}.png").convert_alpha()
         self.image.blits(((speaker, (45, 51)), (name_img, (46, 11))))
+
+        self.image = pg.transform.scale_by(self.image, SCALE_RES[0])
 
         self.passed_time = 0
         self.max_time = time * 1000
@@ -49,7 +48,7 @@ class Dialogue:
                 self.dialogue[int(len(self.dialogue) * (self.passed_time / self.max_time))] = None
 
                 font_size = self.font.size(self.falado_line[self.current_line])
-                if font_size[0] > 1100:
+                if font_size[0] > 1100 * SCALE_RES[0]:
                     self.current_line += 1
                     self.text_imgs.append(None)
                     self.falado_line.append("")
@@ -63,7 +62,7 @@ class Dialogue:
 
                 self.final_img = self.image.copy()
                 for i, text_img in enumerate(self.text_imgs):
-                    self.final_img.blit(text_img, (158, 46 + font_size[1]*i))
+                    self.final_img.blit(text_img, (158 * SCALE_RES[0], 46 * SCALE_RES[1] + font_size[1] * i))
 
             game.drawer.to_draw.append((4, (self.final_img, self.frame_x, self.frame_y)))
 

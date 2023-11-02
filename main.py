@@ -33,7 +33,12 @@ class Game:
     def __init__(self):
         pg.init()
         pg.font.init()
-        self.screen = pg.display.set_mode(RES)
+
+        if FULLSCREEN:
+            self.screen = pg.display.set_mode(RES, pg.FULLSCREEN)
+        else:
+            self.screen = pg.display.set_mode(RES)
+
         self.clock = pg.time.Clock()
         self.time = pg.time.get_ticks()
         self.lest_time = pg.time.get_ticks()

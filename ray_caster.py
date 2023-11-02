@@ -103,7 +103,7 @@ def cast_floor(
         sin, cos = np.sin(ray_angle), np.cos(ray_angle)
         fish = np.cos(np.deg2rad(id_x / (RenderWidth / FOV) - HalfFOV))
 
-        c_height = HalfRenderHeight - walls_height[id_x//2]//2
+        c_height = HalfRenderHeight - walls_height[id_x//SCALE]//2
         # if c_height > HalfRenderHeight:
         #    c_height = HalfRenderHeight
         for id_y in range(c_height):
