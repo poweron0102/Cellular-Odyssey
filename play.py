@@ -5,23 +5,42 @@ import PySimpleGUI as sg
 # Lista de resoluções suportadas
 resolutions = ['800x600', '640x360', '1280x720', '1920x1080']
 
+# Atualiza as configurações no arquivo settings.py
+RES = (1280, 720)
+FULLSCREEN = True
+VOLUME = 100.0
+SCALE = 2
+scale_map = [False, False, False, False]
+with open('settings.py', 'r') as settings_file:
+    lines = settings_file.readlines()
+    for line in lines:
+        if line.startswith('RES '):
+            exec(line)
+        elif line.startswith('FULLSCREEN '):
+            exec(line)
+        elif line.startswith('VOLUME '):
+            exec(line)
+        elif line.startswith('SCALE '):
+            exec(line)
+            scale_map[SCALE - 1] = True
+
 # Layout da janela de configurações
 layout = [
     [sg.Text('Settings')],
-    [sg.Text('Resolution:'), sg.Combo(resolutions, default_value='1280x720', key='-RESOLUTION-')],
-    [sg.Checkbox('Full screen', default=False, key='-FULLSCREEN-')],
+    [sg.Text('Resolution:'), sg.Combo(resolutions, default_value=f'{RES[0]}x{RES[1]}', key='-RESOLUTION-')],
+    [sg.Checkbox('Full screen', default=FULLSCREEN, key='-FULLSCREEN-')],
     [sg.Text('Game sound')],
-    [sg.Slider(range=(0, 100), default_value=100, orientation='h', key='-VOLUME-')],
+    [sg.Slider(range=(0, 100), default_value=VOLUME, orientation='h', key='-VOLUME-')],
     [sg.Text('Qualidade Gráfica')],
     [
-        sg.Radio('Low', 'graficos', key='-LOW-'),
-        sg.Radio('Medium', 'graficos', key='-MEDIUM-'),
-        sg.Radio('High', 'graficos', default=True,  key='-HIGH-')
+        sg.Radio('Low', 'graficos', default=scale_map[3], key='-LOW-'),
+        sg.Radio('Medium', 'graficos', default=scale_map[2], key='-MEDIUM-'),
+        sg.Radio('High', 'graficos', default=scale_map[1],  key='-HIGH-')
     ],
     [sg.Button('Play'), sg.Button('Exit')]
 ]
 
-window = sg.Window('Configurações do Jogo', layout)
+window = sg.Window('Cells', layout)
 
 while True:
     event, values = window.read()
@@ -37,10 +56,6 @@ while True:
             quality = 3
         elif values['-HIGH-']:
             quality = 2
-
-        # Atualiza as configurações no arquivo settings.py
-        with open('settings.py', 'r') as settings_file:
-            lines = settings_file.readlines()
 
         with open('settings.py', 'w') as settings_file:
             for line in lines:

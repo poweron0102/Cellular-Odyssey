@@ -1,5 +1,6 @@
 import sys
 from types import ModuleType
+from enum import Enum
 from importlib import import_module
 import pygame as pg
 import numpy as np
@@ -16,8 +17,15 @@ from player import *
 from ray_caster import *
 from dialogue import *
 from sprites import *
+from enemy import *
 from drawer import *
 from actions import *
+
+
+class NewGame(Exception):
+    """Exception raised for handle new games."""
+    # Isso com claramente não é uma gambiarra.
+    pass
 
 
 def check_events():
@@ -33,22 +41,31 @@ class Game:
     def __init__(self):
         pg.init()
         pg.font.init()
-
         if FULLSCREEN:
-            self.screen = pg.display.set_mode(RES, pg.FULLSCREEN)
+            self.screen = pg.display.set_mode((1280, 720), pg.FULLSCREEN)
         else:
-            self.screen = pg.display.set_mode(RES)
+            self.screen = pg.display.set_mode((1280, 720))
 
         self.clock = pg.time.Clock()
         self.time = pg.time.get_ticks()
         self.lest_time = pg.time.get_ticks()
         self.delta_time = 0
-        self.new_game("base")
+        self.new_game("level_selector", supress=True)
         # pg.mouse.set_visible
 
-    def new_game(self, level: str):
+    def new_game(self, level: str, set_screen=None, supress=False):
+        if set_screen:
+            # print(level, set_screen)
+            self.screen = pg.display.set_mode(set_screen)
+            self.screen.blit(pg.transform.scale(pg.image.load("assets/gui/load.png"), set_screen), (0, 0))
+            pg.display.flip()
+            if FULLSCREEN and not pg.display.get_surface().get_flags() & pg.FULLSCREEN:
+                pg.display.toggle_fullscreen()
+
         self.level = import_module(f".{level}", "levels")
         self.level.init(self)
+        if not supress:
+            raise NewGame
 
     def update(self):
         pg.display.flip()
@@ -63,7 +80,10 @@ class Game:
         while True:
             check_events()
             self.update()
-            self.level.loop(self)
+            try:
+                self.level.loop(self)
+            except NewGame:
+                pass
 
 
 if __name__ == '__main__':

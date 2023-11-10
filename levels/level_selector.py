@@ -1,14 +1,6 @@
 import os
-
-# noinspection PyUnreachableCode
-if False:
-    from ..main import *
-    from ..buttons import *
-else:
-    # noinspection PyUnresolvedReferences
-    from main import *
-    # noinspection PyUnresolvedReferences
-    from buttons import *
+from main import *
+from buttons import *
 
 
 class Menu:
@@ -32,11 +24,11 @@ def init(in_menu: 'Game | Menu'):
     for file_name in MapaNames:
         bnt = Button(
             80 + button_cont * (80 + 320),
-            HalfRenderHeight - 140,
+            360 - 140,
             file_name,
             img_base='button_base_ico',
             img_hover='button_hover_ico',
-            func_click=in_menu.new_game, arg_click=file_name
+            func_click=lambda x: in_menu.new_game(*x), arg_click=(file_name, RES)
         )
         bnt.img_base.blit(pg.image.load(f'assets/gui/{file_name}.png').convert_alpha(), (0, 4))
         bnt.img_hover.blit(pg.image.load(f'assets/gui/{file_name}.png').convert_alpha(), (0, 4))
