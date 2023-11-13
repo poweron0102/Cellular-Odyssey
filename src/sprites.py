@@ -38,7 +38,7 @@ class Sprite:
         self.dist = math.hypot(dx, dy)
         view_dist = self.dist * math.cos(self.delta_ang)
         # dist = self.dist * math.cos(delta_ang)
-        if -self.width / 2 < self.screen_x < RES[0] + (self.width / 2) and view_dist > 1:
+        if -self.width / 2 < self.screen_x < RES[0] + (self.width / 2) and view_dist > 10:
             item = view_dist, self.scale, self.image, self.height, self.screen_x, self.height_shift
             self.game.drawer.to_draw.append((3, item))
 

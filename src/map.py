@@ -17,7 +17,7 @@ class Map:
             self, game, world_map,
             tile_set: list[Tile], texture_set: list['None | Texture'], texture_floor: list[str]
     ):
-        self.game: 'InGame' = game
+        self.game: InGame = game
 
         self.tile_set: list[Tile] = tile_set
         self.tiles_to_render = np.array(

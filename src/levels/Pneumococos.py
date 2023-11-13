@@ -1,4 +1,4 @@
-from main import *
+from src.main import *
 
 
 @add_action
@@ -128,5 +128,11 @@ def loop(in_game: 'InGame'):
     in_game.ray_caster.update()
     in_game.dialogue_handler.update()
     in_game.sprite_handler.update()
+
+    print(
+        x := in_game.sprite_handler.sprites[1].seeing_player()
+    )
+    #if x:
+    #    in_game.sprite_handler.sprites[1].go_to(in_game.player.x, in_game.player.y, 92)
 
     in_game.drawer.update()

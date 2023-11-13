@@ -1,6 +1,6 @@
 import os
-from main import *
-from buttons import *
+from src.main import *
+from src.buttons import *
 
 
 class Menu:
