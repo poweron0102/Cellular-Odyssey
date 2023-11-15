@@ -1,3 +1,5 @@
+import numpy as np
+
 from main import *
 
 
@@ -48,92 +50,67 @@ class Enemy(Sprite):
         player_x, player_y = self.game.player.x, self.game.player.y
         sprite_x, sprite_y = self.x, self.y
 
-        dx, dy = sprite_x - player_x, sprite_y - player_y
-        player_dist = (np.sqrt(dx ** 2 + dy ** 2) // Tile_size) + 1
+        dx, dy = player_x - sprite_x, player_y - sprite_y
+        player_dist = (np.sqrt(dx ** 2 + dy ** 2) // Tile_size)
         world_map = self.game.map.world_wall
         is_render = self.game.map.tiles_to_render
-        angle_ray = math.atan2(dx, dy)
+        angle_ray = math.atan2(dy, dx)
+        angle_ray = angle_to_fist(angle_ray)
 
-        pg.draw.circle(self.game.screen,
-                       'white',
-                       ((Mine_Map_zoom * sprite_x / Tile_size) + Mini_Map_position[0],
-                        (Mine_Map_zoom * sprite_y / Tile_size) + Mini_Map_position[1]),
-                       4
-                       )
-        pg.draw.circle(self.game.screen,
-                       (78, 45, 177),
-                       ((Mine_Map_zoom * player_x / Tile_size) + Mini_Map_position[0],
-                        (Mine_Map_zoom * player_y / Tile_size) + Mini_Map_position[1]),
-                       4
-                       )
-        pg.draw.circle(self.game.screen,
-                       (255, 45, 177),
-                       ((Mine_Map_zoom * (sprite_x + np.cos(angle_ray)*20) / Tile_size) + Mini_Map_position[0],
-                        (Mine_Map_zoom * (sprite_y + np.sin(angle_ray)*20) / Tile_size) + Mini_Map_position[1]),
-                       4
-                       )
+        return numba_seeing_player(sprite_x, sprite_y, player_dist, world_map, is_render, angle_ray)
 
-        a_tan = 1 / (np.tan(angle_ray) + 0.00001)
-        rendist = 0
-        if angle_ray > np.pi:  # looking up
-            ray_y = (sprite_y // Tile_size) * Tile_size - 0.0001
-            ray_x = sprite_x + ((sprite_y - ray_y) * a_tan)
-            offset_y = -Tile_size
-            offset_x = -offset_y * a_tan
-        else:  # looking down
-            ray_y = (sprite_y // Tile_size) * Tile_size + Tile_size
-            ray_x = sprite_x + ((sprite_y - ray_y) * a_tan)
-            offset_y = Tile_size
-            offset_x = -offset_y * a_tan
 
-        while rendist < player_dist:
-            y = int(ray_y // Tile_size)
-            if 0 <= y < len(world_map):
-                x = int(ray_x // Tile_size)
-                if 0 <= x < len(world_map[y]):
-                    pg.draw.circle(self.game.screen,
-                                   'red',
-                                   ((Mine_Map_zoom * ray_x / Tile_size) + Mini_Map_position[0],
-                                    (Mine_Map_zoom * ray_y / Tile_size) + Mini_Map_position[1]),
-                                   4
-                                   )
-                    if world_map[y][x] in is_render:
-                        return False
-            # else:
-            ray_x += offset_x
-            ray_y += offset_y
-            rendist += 1
+@njit(fastmath=FastMath)
+def numba_seeing_player(sprite_x, sprite_y, player_dist, world_map, is_render, angle_to_player):
+    a_tan = -1 / (np.tan(angle_to_player) + 0.00001)
+    rendist = 0
+    if angle_to_player > np.pi:  # looking up
+        ray_y = (sprite_y // Tile_size) * Tile_size - 0.0001
+        ray_x = sprite_x + ((sprite_y - ray_y) * a_tan)
+        offset_y = -Tile_size
+        offset_x = -offset_y * a_tan
+    else:  # looking down
+        ray_y = (sprite_y // Tile_size) * Tile_size + Tile_size
+        ray_x = sprite_x + ((sprite_y - ray_y) * a_tan)
+        offset_y = Tile_size
+        offset_x = -offset_y * a_tan
 
-        # Calculo vertical -=-=-=-=-=-=-=-=-=-=
-        rendist = 0
-        a_tan = np.tan(angle_ray)
-        if angle_ray < np.pi / 2 or angle_ray > np.pi * 3 / 2:  # looking right
-            ray_x = (sprite_x // Tile_size) * Tile_size + Tile_size
-            ray_y = sprite_y + ((sprite_x - ray_x) * a_tan)
-            offset_x = Tile_size
-            offset_y = -offset_x * a_tan
-        else:  # looking left
-            ray_x = (sprite_x // Tile_size) * Tile_size - 0.0001
-            ray_y = sprite_y + ((sprite_x - ray_x) * a_tan)
-            offset_x = -Tile_size
-            offset_y = -offset_x * a_tan
+    while rendist < player_dist:
+        y = int(ray_y // Tile_size)
+        if 0 <= y < len(world_map):
+            x = int(ray_x // Tile_size)
+            if 0 <= x < len(world_map[y]):
+                if world_map[y][x] in is_render:
+                    return False
+        # else:
+        ray_x += offset_x
+        ray_y += offset_y
+        rendist += 1
 
-        while rendist < player_dist:
-            y = int(ray_y // Tile_size)
-            if 0 <= y < len(world_map):
-                x = int(ray_x // Tile_size)
-                if 0 <= x < len(world_map[y]):
-                    pg.draw.circle(self.game.screen,
-                                   'blue',
-                                   ((Mine_Map_zoom * ray_x / Tile_size) + Mini_Map_position[0],
-                                    (Mine_Map_zoom * ray_y / Tile_size) + Mini_Map_position[1]),
-                                   4
-                                   )
-                    if world_map[y][x] in is_render:
-                        return False
-            # else:
-            ray_x += offset_x
-            ray_y += offset_y
-            rendist += 1
+    # Calculo vertical -=-=-=-=-=-=-=-=-=-=
+    a_tan = -np.tan(angle_to_player)
+    rendist = 0
+    if angle_to_player < np.pi / 2 or angle_to_player > np.pi * 3 / 2:  # looking right
+        ray_x = (sprite_x // Tile_size) * Tile_size + Tile_size
+        ray_y = sprite_y + ((sprite_x - ray_x) * a_tan)
+        offset_x = Tile_size
+        offset_y = -offset_x * a_tan
+    else:  # looking left
+        ray_x = (sprite_x // Tile_size) * Tile_size - 0.0001
+        ray_y = sprite_y + ((sprite_x - ray_x) * a_tan)
+        offset_x = -Tile_size
+        offset_y = -offset_x * a_tan
 
-        return True
+    while rendist < player_dist:
+        y = int(ray_y // Tile_size)
+        if 0 <= y < len(world_map):
+            x = int(ray_x // Tile_size)
+            if 0 <= x < len(world_map[y]):
+                if world_map[y][x] in is_render:
+                    return False
+        # else:
+        ray_x += offset_x
+        ray_y += offset_y
+        rendist += 1
+
+    return True
