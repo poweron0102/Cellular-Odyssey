@@ -28,6 +28,8 @@ class Enemy(Sprite):
     def __init__(self, game, enemy: EnemyType, x, y):
         name, scale, shift, action = enemy.value
         super().__init__(game, name, x, y, scale, shift, action)
+        self.sprite_update = super().update
+
         self.enemy = enemy
         self.angle = 0
 
@@ -35,8 +37,10 @@ class Enemy(Sprite):
         self.health = 100
         self.damage = 10
 
+        self.time = 0
+        self.attack_cooldown = 2
+
     def go_to(self, x, y, min_dist: None | int = None):
-        # self.angle = math.atan2(x - self.x - self.width/self.dist, y - self.y)
         dx, dy = x - self.x, y - self.y
         self.angle = math.atan2(dx, dy)
         if min_dist:
@@ -49,15 +53,31 @@ class Enemy(Sprite):
     def seeing_player(self) -> bool:
         player_x, player_y = self.game.player.x, self.game.player.y
         sprite_x, sprite_y = self.x, self.y
-
         dx, dy = player_x - sprite_x, player_y - sprite_y
+
         player_dist = (np.sqrt(dx ** 2 + dy ** 2) // Tile_size)
-        world_map = self.game.map.world_wall
-        is_render = self.game.map.tiles_to_render
         angle_ray = math.atan2(dy, dx)
         angle_ray = angle_to_fist(angle_ray)
 
+        world_map = self.game.map.world_wall
+        is_render = self.game.map.tiles_to_render
+
         return numba_seeing_player(sprite_x, sprite_y, player_dist, world_map, is_render, angle_ray)
+
+    def update(self):
+        self.time += self.game.delta_time
+        if self.time > 1:
+            self.time -= 1
+        self.attack_cooldown -= self.game.delta_time
+
+        if self.seeing_player():
+            if self.go_to(self.game.player.x, self.game.player.y, 92):
+                if self.attack_cooldown <= 0:
+                    # self.game.player.health -= self.damage
+                    print(self.enemy, "atacou!")
+                    self.attack_cooldown = 2
+
+        self.sprite_update()
 
 
 @njit(fastmath=FastMath)

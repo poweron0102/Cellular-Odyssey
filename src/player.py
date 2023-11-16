@@ -3,20 +3,20 @@ from main import *
 
 class Player:
     def __init__(self, game):
-        self.game: Game = game
+        self.game: InGame = game
 
         self.x = Posicao_inicial[0]
         self.y = Posicao_inicial[1]
+        self.ang = math.radians(Default_angulo)
 
         self.speed = Player_speed
+
+        self.health = 200
 
         self.xray = False
         self.open_map = False
         self.interact = False
         self.debug = False
-
-        self.ang = math.radians(Default_angulo)
-
         self.keys = pg.key.get_pressed()
 
     def update(self):
