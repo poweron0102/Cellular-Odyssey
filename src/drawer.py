@@ -136,7 +136,7 @@ def sprite(item, screen, game):
     image = pg.transform.scale_by(image, high / height)
 
     screen.blit(image, (
-        screen_x,
+        screen_x - image.get_width() / 2,
         ((RES[1] - high * height_shift) / 2)
     ))
 

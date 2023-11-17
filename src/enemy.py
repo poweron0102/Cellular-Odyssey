@@ -83,7 +83,7 @@ class Enemy(Sprite):
 @njit(fastmath=FastMath)
 def numba_seeing_player(sprite_x, sprite_y, player_dist, world_map, is_render, angle_to_player):
     a_tan = -1 / (np.tan(angle_to_player) + 0.00001)
-    rendist = 0
+    rendist = 1
     if angle_to_player > np.pi:  # looking up
         ray_y = (sprite_y // Tile_size) * Tile_size - 0.0001
         ray_x = sprite_x + ((sprite_y - ray_y) * a_tan)
@@ -109,7 +109,7 @@ def numba_seeing_player(sprite_x, sprite_y, player_dist, world_map, is_render, a
 
     # Calculo vertical -=-=-=-=-=-=-=-=-=-=
     a_tan = -np.tan(angle_to_player)
-    rendist = 0
+    rendist = 1
     if angle_to_player < np.pi / 2 or angle_to_player > np.pi * 3 / 2:  # looking right
         ray_x = (sprite_x // Tile_size) * Tile_size + Tile_size
         ray_y = sprite_y + ((sprite_x - ray_x) * a_tan)

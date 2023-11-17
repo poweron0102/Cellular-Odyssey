@@ -105,7 +105,7 @@ world_map = np.array([
 ])
 
 
-def init(in_game: InGame):
+def init(in_game: 'InGame'):
     in_game.map = Map(in_game, world_map, TileSet, TextureSet, TextureFloor)
     in_game.player = Player(in_game)
     in_game.ray_caster = RayCaster(in_game)
@@ -121,7 +121,7 @@ def init(in_game: InGame):
     in_game.sprite_handler.add(Enemy(in_game, EnemyType.Staphylococcus, 800, 700))
 
 
-def loop(in_game: InGame):
+def loop(in_game: 'InGame'):
     in_game.player.update()
     in_game.action.update()
     in_game.parallax.update()
