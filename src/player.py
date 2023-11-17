@@ -48,6 +48,8 @@ class Player:
 
         if keys[pg.K_0] and not self.keys[pg.K_0]:
             self.debug = True
+            print("Player: ", self.x, self.y)
+            print("Player mod: ", self.x//Tile_size, self.y//Tile_size)
         else:
             self.debug = False
 

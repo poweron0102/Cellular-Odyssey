@@ -1,3 +1,5 @@
+import random
+
 from main import *
 
 
@@ -57,3 +59,35 @@ class SpriteHandler:
 
     def add(self, sprite: Sprite):
         self.sprites.append(sprite)
+
+
+class MovingSprite(Sprite):
+    def __init__(self, game, name, x, y, scale=1, shift=1, speed=50, action=None):
+        super().__init__(game, name, x, y, scale, shift, action)
+        self.angle = 0
+        self.speed = speed
+
+        self.time = 0
+        self.route = []
+        self._route = []
+
+    def go_to(self, x, y, min_dist=1):
+        dx, dy = x - self.x, y - self.y
+        self.angle = math.atan2(dx, dy)
+        if min_dist:
+            if dx ** 2 + dy ** 2 <= min_dist ** 2:
+                return True
+        self.x += math.sin(self.angle) * (self.speed + random.randint(-10, 10)) * self.game.delta_time
+        self.y += math.cos(self.angle) * (self.speed + random.randint(-10, 10)) * self.game.delta_time
+        return False
+
+    def update(self):
+        if len(self.route) > 0 and len(self._route) == 0:
+            self._route = self.route.copy()
+            self.x, self.y = self._route[0][0], self._route[0][1]
+
+        if len(self._route) > 0:
+            if self.go_to(self._route[0][0], self._route[0][1]):
+                self._route.pop(0)
+
+        super().update()

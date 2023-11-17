@@ -24,31 +24,21 @@ class EnemyType(Enum):
     )
 
 
-class Enemy(Sprite):
+class Enemy(MovingSprite):
     def __init__(self, game, enemy: EnemyType, x, y):
         name, scale, shift, action = enemy.value
         super().__init__(game, name, x, y, scale, shift, action)
         self.sprite_update = super().update
 
         self.enemy = enemy
-        self.angle = 0
-
-        self.speed = 150
         self.health = 100
         self.damage = 10
 
+        self.angle = 0
+        self.speed = 150
+
         self.time = 0
         self.attack_cooldown = 2
-
-    def go_to(self, x, y, min_dist: None | int = None):
-        dx, dy = x - self.x, y - self.y
-        self.angle = math.atan2(dx, dy)
-        if min_dist:
-            if dx ** 2 + dy ** 2 <= min_dist ** 2:
-                return True
-        self.x += math.sin(self.angle) * self.speed * self.game.delta_time
-        self.y += math.cos(self.angle) * self.speed * self.game.delta_time
-        return False
 
     def seeing_player(self) -> bool:
         player_x, player_y = self.game.player.x, self.game.player.y
