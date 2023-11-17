@@ -1,7 +1,7 @@
-from src.main import *
-from src.map import Tile
-from src.textures import Texture
-from src.actions import add_action
+from main import *
+from map import Tile
+from textures import Texture
+from actions import add_action
 
 
 @add_action
