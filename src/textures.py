@@ -25,3 +25,28 @@ class Texture:
         return pg.surfarray.pixels3d(self.texture(look=look))
 
 
+class AnimatedTexture(Texture):
+    def __init__(self, names: list[str], time=1):
+        self.time = 0
+        self.time_per_frame = time
+
+        self.current_freme = 0
+        self.frames: list[Texture] = []
+        for name in names:
+            self.frames.append(Texture(name))
+
+    def update(self, delta_time):
+        self.time += delta_time
+        self.current_freme = int(self.time/self.time_per_frame)
+        if self.current_freme >= len(self.frames):
+            self.current_freme = 0
+            self.time = 0
+
+    def texture(self, look=0):
+        return self.frames[self.current_freme].texture(look=look)
+
+    def texture_array(self, look=0):
+        return self.frames[self.current_freme].texture_array(look=look)
+
+
+

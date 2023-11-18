@@ -16,6 +16,7 @@ TileSet = [
     Tile(True, True, 'red', None, 4),
     Tile(True, True, 'red', None, 5),
     Tile(True, True, 'red', None, 6),
+    Tile(True, True, 'red', None, 9),
 ]
 
 TextureSet = [
@@ -29,6 +30,10 @@ TextureSet = [
     Texture('c_2'),
     Texture('p_2'),
 ]
+AnimatedTextureSet = [
+    AnimatedTexture(['p_1', 'p_2', 'p_3', 'p_4'], 2),
+]
+TextureSet.extend(AnimatedTextureSet)
 
 TextureFloor = [
     'cobblestone',
@@ -40,7 +45,7 @@ world_map = np.array([
     [
         [0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 7, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0],
@@ -126,8 +131,8 @@ def init(in_game: 'InGame'):
     in_game.drawer = Drawer(in_game)
     in_game.dialogue_handler = DialogueHandler(in_game)
     in_game.parallax = Parallax(None, "ceu", in_game)
-
     in_game.sprite_handler = SpriteHandler(in_game)
+
     in_game.sprite_handler.add(Sprite(in_game, 'platelet', 545, 610, action='construction'))
 
     oc = MovingSprite(in_game, 'ordinary-cell', 0, 0, scale=0.55, shift=0.3)
@@ -143,10 +148,10 @@ def init(in_game: 'InGame'):
     oc.route = [(13.5 * Tile_size, 0), (13.5 * Tile_size, 10.5 * Tile_size), (23.5 * Tile_size, 10.5 * Tile_size)]
     in_game.sprite_handler.add(oc)
 
-    in_game.sprite_handler.add(Sprite(in_game, 'tree', 9 * Tile_size, 9 * Tile_size, scale=1.6, shift=1.2))
-    in_game.sprite_handler.add(Sprite(in_game, 'tree', 15 * Tile_size, 9 * Tile_size, scale=1.6, shift=1.2))
-    in_game.sprite_handler.add(Sprite(in_game, 'tree', 15 * Tile_size, 15 * Tile_size, scale=1.6, shift=1.2))
-    in_game.sprite_handler.add(Sprite(in_game, 'tree', 9 * Tile_size, 15 * Tile_size, scale=1.6, shift=1.2))
+    in_game.sprite_handler.add(Sprite(in_game, 'tree', *to_map(9, 9), scale=1.6, shift=1.2))
+    in_game.sprite_handler.add(Sprite(in_game, 'tree', *to_map(15, 9), scale=1.6, shift=1.2))
+    in_game.sprite_handler.add(Sprite(in_game, 'tree', *to_map(15, 15), scale=1.6, shift=1.2))
+    in_game.sprite_handler.add(Sprite(in_game, 'tree', *to_map(9, 15), scale=1.6, shift=1.2))
 
     in_game.sprite_handler.add(Enemy(in_game, EnemyType.Pneumococos, 800, 500))
     #in_game.sprite_handler.add(Enemy(in_game, EnemyType.Streptococcus, 800, 600))
@@ -154,6 +159,9 @@ def init(in_game: 'InGame'):
 
 
 def loop(in_game: 'InGame'):
+    for animated in AnimatedTextureSet:
+        animated.update(in_game.delta_time)
+
     in_game.player.update()
     in_game.action.update()
     in_game.parallax.update()

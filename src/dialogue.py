@@ -40,18 +40,17 @@ class Dialogue:
 
         if self.passed_time < self.max_time:
             # print(round(len(self.dialogue) * (self.passed_time / self.max_time) + 0.5))
-            if current_dialogue := self.dialogue[
-                int(len(self.dialogue) * (self.passed_time / self.max_time))
-            ]:
+            dialog_id = int(len(self.dialogue) * (self.passed_time / self.max_time))
+            if current_dialogue := self.dialogue[dialog_id]:
                 self.falado_line[self.current_line] += current_dialogue + ' '
 
-                self.dialogue[int(len(self.dialogue) * (self.passed_time / self.max_time))] = None
+                self.dialogue[dialog_id] = None
 
                 font_size = self.font.size(self.falado_line[self.current_line])
                 if font_size[0] > 1100 * SCALE_RES[0]:
                     self.current_line += 1
                     self.text_imgs.append(None)
-                    self.falado_line.append("")
+                    self.falado_line.append(current_dialogue + ' ')
 
                 self.text_imgs[self.current_line] = self.font.render(
                     self.falado_line[self.current_line],
