@@ -1,5 +1,6 @@
 import sys
 from types import ModuleType
+import builtins
 from enum import Enum
 from importlib import import_module
 import pygame as pg
@@ -51,6 +52,7 @@ class Game:
         self.time = pg.time.get_ticks()
         self.lest_time = pg.time.get_ticks()
         self.delta_time = 0
+        self.run_time = 0
         self.new_game("level_selector", supress=True)
         # pg.mouse.set_visible
 
@@ -65,6 +67,7 @@ class Game:
 
         self.level = import_module(f".{level}", "levels")
         self.level.init(self)
+        self.run_time = 0
         if not supress:
             raise NewGame
 
@@ -75,6 +78,7 @@ class Game:
         self.lest_time = self.time
         self.time = pg.time.get_ticks()
         self.delta_time = (self.time - self.lest_time) / 1000.0
+        self.run_time += self.delta_time
         pg.display.set_caption(f'Cellular Odyssey   FPS: {self.clock.get_fps() :.1f}')
 
     def run(self):

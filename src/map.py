@@ -4,11 +4,12 @@ from main import *
 
 
 class Tile:
-    def __init__(self, is_wall, render, color, action, texture: int | None):
+    def __init__(self, is_wall, render, color, texture: int | None, action=None, action_args=None):
         self.is_wall = is_wall
         self.render = render
         self.color = color
         self.action = action
+        self.action_args = action_args
         self.texture = texture
 
 

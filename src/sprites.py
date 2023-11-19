@@ -4,7 +4,7 @@ from main import *
 
 
 class Sprite:
-    def __init__(self, game, name, x, y, scale=0.5, shift=0.07, action=None):
+    def __init__(self, game, name, x, y, scale=0.5, shift=0.05, action=None):
         self.game: InGame = game
         self.player = game.player
 
@@ -51,24 +51,31 @@ class Sprite:
 class SpriteHandler:
     def __init__(self, game):
         self.game: InGame = game
-        self.sprites: list[Sprite] = []
+        self._sprites: list[Sprite] = []
+        self._times = []
 
     def update(self):
-        for sprite in self.sprites:
-            sprite.update()
+        for index, sprite in enumerate(self._sprites):
+            # print(self.game.run_time, self._times[index])
+            if self._times[index] < self.game.run_time:
+                sprite.update()
 
-    def add(self, sprite: Sprite):
-        self.sprites.append(sprite)
+    def add(self, sprite: Sprite, time=0):
+        """
+        A variavel time é o tempo que o sprite demorara para aparecer na tela.
+        """
+        self._sprites.append(sprite)
+        self._times.append(time)
 
 
 class MovingSprite(Sprite):
-    def __init__(self, game, name, x, y, scale=1, shift=1, speed=50, action=None):
+    def __init__(self, game, name, x, y, scale=1, shift=1, speed=50, route=None, action=None):
         super().__init__(game, name, x, y, scale, shift, action)
         self.angle = 0
         self.speed = speed
 
         self.time = 0
-        self.route = []
+        self.route = route if route else []
         self._route = []
 
     def go_to(self, x, y, min_dist=1):

@@ -19,7 +19,7 @@ class Actions:
         playerX = self.game.player.x
         playerY = self.game.player.y
         action = self.game.map.tile_action(playerX, playerY)
-        if action:
+        if type(action) is str:
             # print(self.action)
             ACTIONS[action](self.game)
 
