@@ -152,6 +152,7 @@ world_map = np.array([
 
 
 def init(in_game: 'InGame'):
+    in_game.scheduler = Scheduler(in_game)
     in_game.map = Map(in_game, world_map, TileSet, TextureSet, TextureFloor)
     in_game.player = Player(in_game, *to_map(14, 14), 0)
     in_game.ray_caster = RayCaster(in_game)
@@ -170,12 +171,13 @@ def init(in_game: 'InGame'):
         [to_map(14.5, 26), to_map(15.5, 25.5), to_map(15.5, 15.5), to_map(23.5, 15.5), to_map(23.5, 17)],
     ]
     for index, route in enumerate(routes):
-        in_game.sprite_handler.add(
+        in_game.scheduler.add(
+            index * 8,
+            in_game.sprite_handler.add,
             MovingSprite(
                 in_game, 'ordinary-cell', 0, 0, scale=0.55, shift=0.3,
                 route=route
-            ),
-            index * 10
+            )
         )
 
     in_game.sprite_handler.add(Sprite(in_game, 'tree', *to_map(11, 11), scale=1.6, shift=1.2))
@@ -183,7 +185,7 @@ def init(in_game: 'InGame'):
     in_game.sprite_handler.add(Sprite(in_game, 'tree', *to_map(11, 17), scale=1.6, shift=1.2))
     in_game.sprite_handler.add(Sprite(in_game, 'tree', *to_map(17, 17), scale=1.6, shift=1.2))
 
-    in_game.sprite_handler.add(Enemy(in_game, EnemyType.Pneumococos, 800, 500))
+    #in_game.sprite_handler.add(Enemy(in_game, EnemyType.Pneumococos, 800, 500))
     #in_game.sprite_handler.add(Enemy(in_game, EnemyType.Streptococcus, 800, 600))
     #in_game.sprite_handler.add(Enemy(in_game, EnemyType.Staphylococcus, 800, 700))
 
@@ -192,6 +194,7 @@ def loop(in_game: 'InGame'):
     for animated in AnimatedTextureSet:
         animated.update(in_game.delta_time)
 
+    in_game.scheduler.update()
     in_game.player.update()
     in_game.action.update()
     in_game.parallax.update()

@@ -24,3 +24,9 @@ class Scheduler:
         self._times.append(self.game.run_time + time)
         self._functions.append(function)
         self._args.append(args)
+
+    def remove(self, function):
+        index = self._functions.index(function)
+        self._times.pop(index)
+        self._functions.pop(index)
+        self._args.pop(index)

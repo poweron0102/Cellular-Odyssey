@@ -51,20 +51,14 @@ class Sprite:
 class SpriteHandler:
     def __init__(self, game):
         self.game: InGame = game
-        self._sprites: list[Sprite] = []
-        self._times = []
+        self.sprites: list[Sprite] = []
 
     def update(self):
-        for index, sprite in enumerate(self._sprites):
-            # print(self.game.run_time, self._times[index])
-            if self._times[index] < self.game.run_time:
-                sprite.update()
+        for sprite in self.sprites:
+            sprite.update()
 
     def add(self, sprite: Sprite):
-        """
-        A variavel time é o tempo que o sprite demorara para aparecer na tela.
-        """
-        self._sprites.append(sprite)
+        self.sprites.append(sprite)
 
 
 class MovingSprite(Sprite):
