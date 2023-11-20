@@ -60,12 +60,11 @@ class SpriteHandler:
             if self._times[index] < self.game.run_time:
                 sprite.update()
 
-    def add(self, sprite: Sprite, time=0):
+    def add(self, sprite: Sprite):
         """
         A variavel time é o tempo que o sprite demorara para aparecer na tela.
         """
         self._sprites.append(sprite)
-        self._times.append(time)
 
 
 class MovingSprite(Sprite):

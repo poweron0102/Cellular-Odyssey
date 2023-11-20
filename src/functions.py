@@ -19,7 +19,11 @@ def distancia(ponto_A, ponto_B):
 
 @njit()
 def to_map(x, y):
-    return int(x * Tile_size), int(y * Tile_size)
+    """
+    Converts the coordinates of the screen to the coordinates of the map.
+    The coordinates of the map are changed because the map is rotated if you used the level editor.
+    """
+    return int(y * Tile_size), int(x * Tile_size)
 
 
 @njit()

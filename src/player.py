@@ -2,12 +2,12 @@ from main import *
 
 
 class Player:
-    def __init__(self, game):
+    def __init__(self, game, x, y, ang):
         self.game: InGame = game
 
-        self.x = Posicao_inicial[0]
-        self.y = Posicao_inicial[1]
-        self.ang = math.radians(Default_angulo)
+        self.x = x
+        self.y = y
+        self.ang = math.radians(ang)
 
         self.speed = Player_speed
 
