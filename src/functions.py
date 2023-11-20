@@ -18,7 +18,7 @@ def distancia(ponto_A, ponto_B):
 
 
 @njit()
-def to_map(x, y):
+def to_map(x, y) -> tuple[int, int]:
     """
     Converts the coordinates of the screen to the coordinates of the map.
     The coordinates of the map are changed because the map is rotated if you used the level editor.

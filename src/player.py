@@ -1,17 +1,29 @@
 from main import *
 
 
+class PlayerType(Enum):
+    # speed, health, damage, attack_func
+    Erythrocyte = 200, 200, 0, None
+    Neutrophil = 200, 200, 10, None
+    Macrophage = 150, 500, 25, None
+    BCell = 200, 200, 10, None
+
+
 class Player:
-    def __init__(self, game, x, y, ang):
+    def __init__(self, game, x, y, ang, player_type: PlayerType):
         self.game: InGame = game
 
         self.x = x
         self.y = y
         self.ang = math.radians(ang)
 
-        self.speed = Player_speed
-
-        self.health = 200
+        self.player_type = player_type
+        speed, health, damage, attack_func = player_type.value
+        self.speed = speed
+        self.health = health
+        self.max_health = health
+        self.damage = damage
+        self.attack_func = attack_func
 
         self.xray = False
         self.open_map = False
@@ -49,7 +61,7 @@ class Player:
         if keys[pg.K_0] and not self.keys[pg.K_0]:
             self.debug = True
             print("Player: ", self.x, self.y)
-            print("Player mod: ", self.x//Tile_size, self.y//Tile_size)
+            print("Player mod: ", self.x // Tile_size, self.y // Tile_size)
         else:
             self.debug = False
 

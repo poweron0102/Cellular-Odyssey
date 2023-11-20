@@ -154,7 +154,7 @@ world_map = np.array([
 def init(in_game: 'InGame'):
     in_game.scheduler = Scheduler(in_game)
     in_game.map = Map(in_game, world_map, TileSet, TextureSet, TextureFloor)
-    in_game.player = Player(in_game, *to_map(14, 14), 0)
+    in_game.player = Player(in_game, *to_map(14, 14), 0, PlayerType.Macrophage)
     in_game.ray_caster = RayCaster(in_game)
     in_game.action = Actions(in_game)
     in_game.drawer = Drawer(in_game)
