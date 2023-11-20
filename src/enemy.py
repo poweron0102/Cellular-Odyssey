@@ -63,8 +63,11 @@ class Enemy(MovingSprite):
         if self.seeing_player():
             if self.go_to(self.game.player.x, self.game.player.y, 92):
                 if self.attack_cooldown <= 0:
-                    # self.game.player.health -= self.damage
-                    print(self.enemy, "atacou!")
+                    self.game.player.health -= self.damage
+
+                    self.game.hud.set_face(1)
+                    self.game.scheduler.add(2, self.game.hud.set_face, 0)
+
                     self.attack_cooldown = 2
 
         self.sprite_update()

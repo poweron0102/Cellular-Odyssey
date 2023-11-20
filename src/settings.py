@@ -1,8 +1,7 @@
 # Desc: Arquivo de configurações do jogo
-import pygame as pg
+# import pygame as pg
 
 FastMath = True  # Gambiarra para ganhar speed
-
 
 RES = (1280, 720)
 SCALE_RES = (RES[0]/1280, RES[1]/720)
@@ -12,20 +11,18 @@ VOLUME = 100.0
 SCALE = 2
 
 FPS = 60
-
-Player_speed = 200
-Player_size = 4
 Mouse_sens = 0.005
 
-Posicao_inicial = (50, 50)
-Default_angulo = 0
-
-NumThreads = 2
+#Player_speed = 200
+#Player_size = 4
+#Posicao_inicial = (50, 50)
+#Default_angulo = 0
+#NumThreads = 2
 
 Texture_Res = 128
 Tile_size = 64
-FOV = 60
 
+FOV = 60
 Render_dist = 35
 Sprite_Ren_dist = 2048
 

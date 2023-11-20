@@ -154,13 +154,14 @@ world_map = np.array([
 def init(in_game: 'InGame'):
     in_game.scheduler = Scheduler(in_game)
     in_game.map = Map(in_game, world_map, TileSet, TextureSet, TextureFloor)
-    in_game.player = Player(in_game, *to_map(14, 14), 0, PlayerType.Macrophage)
+    in_game.player = Player(in_game, *to_map(14, 14), 0, PlayerType.Neutrophil)
     in_game.ray_caster = RayCaster(in_game)
     in_game.action = Actions(in_game)
     in_game.drawer = Drawer(in_game)
     in_game.dialogue_handler = DialogueHandler(in_game)
     in_game.parallax = Parallax(None, "ceu", in_game)
     in_game.sprite_handler = SpriteHandler(in_game)
+    in_game.hud = Hud(in_game)
 
     in_game.sprite_handler.add(Sprite(in_game, 'platelet', *to_map(10.5, 11.5), action='construction'))
 
@@ -185,7 +186,7 @@ def init(in_game: 'InGame'):
     in_game.sprite_handler.add(Sprite(in_game, 'tree', *to_map(11, 17), scale=1.6, shift=1.2))
     in_game.sprite_handler.add(Sprite(in_game, 'tree', *to_map(17, 17), scale=1.6, shift=1.2))
 
-    #in_game.sprite_handler.add(Enemy(in_game, EnemyType.Pneumococos, 800, 500))
+    in_game.sprite_handler.add(Enemy(in_game, EnemyType.Pneumococos, 800, 500))
     #in_game.sprite_handler.add(Enemy(in_game, EnemyType.Streptococcus, 800, 600))
     #in_game.sprite_handler.add(Enemy(in_game, EnemyType.Staphylococcus, 800, 700))
 
@@ -203,5 +204,6 @@ def loop(in_game: 'InGame'):
     in_game.sprite_handler.update()
 
     in_game.drawer.update()
+    in_game.hud.update()
 
 

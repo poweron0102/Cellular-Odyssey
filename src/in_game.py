@@ -10,4 +10,5 @@ class InGame(Game):
     action: Actions
     ray_caster: RayCaster
     player: Player
+    hud: Hud
     map: Map

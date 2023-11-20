@@ -17,6 +17,7 @@ from textures import *
 from parallax import *
 from map import *
 from player import *
+from hud import *
 from ray_caster import *
 from dialogue import *
 from sprites import *

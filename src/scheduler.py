@@ -11,10 +11,10 @@ class Scheduler:
     def update(self):
         for index, function in enumerate(self._functions):
             if self._times[index] < self.game.run_time:
-                if self._args[index]:
-                    function(self._args[index])
-                else:
+                if self._args[index] is None:
                     function()
+                else:
+                    function(self._args[index])
 
                 self._times.pop(index)
                 self._functions.pop(index)

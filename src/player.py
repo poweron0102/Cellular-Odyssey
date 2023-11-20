@@ -3,10 +3,10 @@ from main import *
 
 class PlayerType(Enum):
     # speed, health, damage, attack_func
-    Erythrocyte = 200, 200, 0, None
-    Neutrophil = 200, 200, 10, None
-    Macrophage = 150, 500, 25, None
-    BCell = 200, 200, 10, None
+    Erythrocyte = 'Erythrocyte', 200, 200, 0, None
+    Neutrophil = 'Neutrophil', 200, 200, 10, None
+    Macrophage = 'Macrophage', 150, 500, 25, None
+    BCell = 'BCell', 200, 200, 10, None
 
 
 class Player:
@@ -18,7 +18,8 @@ class Player:
         self.ang = math.radians(ang)
 
         self.player_type = player_type
-        speed, health, damage, attack_func = player_type.value
+        name, speed, health, damage, attack_func = player_type.value
+        self.name = name
         self.speed = speed
         self.health = health
         self.max_health = health
@@ -32,6 +33,8 @@ class Player:
         self.keys = pg.key.get_pressed()
 
     def update(self):
+        self.health = min(self.health + self.game.delta_time, self.max_health)
+
         # Movimento WASD  -=-=-=-=-=-=-=-=-=-=-=-=-=-=
         keys = pg.key.get_pressed()
         dx = 0
@@ -91,10 +94,10 @@ class Player:
             self.ang += 2 * math.pi
         # Movimento Mouse -=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-        if not self.game.map.is_wall(self.x + dx * Player_size, self.y):
+        if not self.game.map.is_wall(self.x + dx * 4, self.y):
             self.x += dx
 
-        if not self.game.map.is_wall(self.x, self.y + dy * Player_size):
+        if not self.game.map.is_wall(self.x, self.y + dy * 4):
             self.y += dy
 
         if self.open_map:
@@ -102,6 +105,10 @@ class Player:
                 (2, self.game.map),
                 (1, self)
             ])
+
+    @property
+    def life_percent(self):
+        return self.health / self.max_health
 
     def calc_linha(self, x, y, tamanho):
         return x + (tamanho * math.cos(self.ang)), y + (tamanho * math.sin(self.ang))
