@@ -76,14 +76,26 @@ class Dialogue:
 class DialogueHandler:
     def __init__(self, game):
         self.game: Game = game
-        self.queue: list[Dialogue | None] = []
+        self._queue: list[Dialogue | None] = []
+        self._queue_funcs: list = []
+        self._queue_args: list = []
 
     def update(self):
-        if len(self.queue) > 0:
-            self.queue[0].update(self.game)
+        if len(self._queue) > 0:
+            self._queue[0].update(self.game)
 
-    def add(self, dig: Dialogue):
-        self.queue.append(dig)
+    def add(self, dig: Dialogue, poped_func=None, poped_arg=None):
+        self._queue.append(dig)
+        self._queue_funcs.append(poped_func)
+        self._queue_args.append(poped_arg)
 
     def pop(self):
-        self.queue.pop(0)
+        self._queue.pop(0)
+        if func := self._queue_funcs.pop(0):
+            if arg := self._queue_args.pop(0):
+                func(arg)
+            else:
+                func()
+        else:
+            self._queue_args.pop(0)
+

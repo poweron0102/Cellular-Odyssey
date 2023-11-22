@@ -1,4 +1,5 @@
 import sys
+import time
 from types import ModuleType
 import builtins
 from enum import Enum
@@ -12,6 +13,7 @@ import random
 from settings import *
 from functions import *
 from in_game import *
+from events import *
 from scheduler import *
 from textures import *
 from parallax import *
@@ -55,7 +57,7 @@ class Game:
         self.lest_time = pg.time.get_ticks()
         self.delta_time = 0
         self.run_time = 0
-        self.new_game("level_selector", supress=True)
+        self.new_game("main_menu", supress=True)
         # pg.mouse.set_visible
 
     def new_game(self, level: str, set_screen=None, supress=False):

@@ -10,7 +10,7 @@ class PlayerType(Enum):
 
 
 class Player:
-    def __init__(self, game, x, y, ang, player_type: PlayerType):
+    def __init__(self, game, x, y, ang, player_type: PlayerType, enable_input=True):
         self.game: InGame = game
 
         self.x = x
@@ -25,6 +25,8 @@ class Player:
         self.max_health = health
         self.damage = damage
         self.attack_func = attack_func
+
+        self.enable_input = enable_input
 
         self.xray = False
         self.open_map = False
@@ -41,19 +43,42 @@ class Player:
         dy = 0
         speed = self.speed * self.game.delta_time
 
-        if keys[pg.K_w]:
-            dx += speed * math.cos(self.ang)
-            dy += speed * math.sin(self.ang)
-        if keys[pg.K_d]:
-            dx += speed * math.cos(self.ang + (math.pi / 2))
-            dy += speed * math.sin(self.ang + (math.pi / 2))
-        if keys[pg.K_a]:
-            dx += (speed * math.sin(self.ang + math.pi)) * -1
-            dy += speed * math.cos(self.ang + math.pi)
-        if keys[pg.K_s]:
-            dx += speed * math.sin(self.ang + (3 * math.pi / 2))
-            dy += (speed * math.cos(self.ang + (3 * math.pi / 2))) * -1
-        # Movimento WASD  -=-=-=-=-=-=-=-=-=-=-=-=-=-=
+        if self.enable_input:
+            if keys[pg.K_w]:
+                dx += speed * math.cos(self.ang)
+                dy += speed * math.sin(self.ang)
+            if keys[pg.K_d]:
+                dx += speed * math.cos(self.ang + (math.pi / 2))
+                dy += speed * math.sin(self.ang + (math.pi / 2))
+            if keys[pg.K_a]:
+                dx += (speed * math.sin(self.ang + math.pi)) * -1
+                dy += speed * math.cos(self.ang + math.pi)
+            if keys[pg.K_s]:
+                dx += speed * math.sin(self.ang + (3 * math.pi / 2))
+                dy += (speed * math.cos(self.ang + (3 * math.pi / 2))) * -1
+            # Movimento WASD  -=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+            # Movimento Mouse -=-=-=-=-=-=-=-=-=-=-=-=-=-=
+            mouse_pos = pg.mouse.get_pos()
+            if mouse_pos[0] < 10:
+                pg.mouse.set_pos(RES[0] - 30, mouse_pos[1])
+
+            if mouse_pos[0] > RES[0] - 10:
+                pg.mouse.set_pos(30, mouse_pos[1])
+
+            mouse_move = pg.mouse.get_rel()
+            self.ang += mouse_move[0] * Mouse_sens
+            if self.ang > 2 * math.pi:
+                self.ang -= 2 * math.pi
+            if self.ang < 0:
+                self.ang += 2 * math.pi
+            # Movimento Mouse -=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+            if not self.game.map.is_wall(self.x + dx * 4, self.y):
+                self.x += dx
+
+            if not self.game.map.is_wall(self.x, self.y + dy * 4):
+                self.y += dy
 
         # Outros -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
         if keys[pg.K_e] and not self.keys[pg.K_e]:
@@ -78,33 +103,32 @@ class Player:
 
         self.keys = keys
 
-        # Movimento Mouse -=-=-=-=-=-=-=-=-=-=-=-=-=-=
-        mouse_pos = pg.mouse.get_pos()
-        if mouse_pos[0] < 10:
-            pg.mouse.set_pos(RES[0] - 30, mouse_pos[1])
-
-        if mouse_pos[0] > RES[0] - 10:
-            pg.mouse.set_pos(30, mouse_pos[1])
-
-        mouse_move = pg.mouse.get_rel()
-        self.ang += mouse_move[0] * Mouse_sens
-        if self.ang > 2 * math.pi:
-            self.ang -= 2 * math.pi
-        if self.ang < 0:
-            self.ang += 2 * math.pi
-        # Movimento Mouse -=-=-=-=-=-=-=-=-=-=-=-=-=-=
-
-        if not self.game.map.is_wall(self.x + dx * 4, self.y):
-            self.x += dx
-
-        if not self.game.map.is_wall(self.x, self.y + dy * 4):
-            self.y += dy
-
         if self.open_map:
             self.game.drawer.to_draw.extend([
                 (2, self.game.map),
                 (1, self)
             ])
+
+    def move(self, dist: float, min_dist=5):
+        dx = dist * math.cos(self.ang) * self.game.delta_time
+        dy = dist * math.sin(self.ang) * self.game.delta_time
+        if dx ** 2 + dy ** 2 <= min_dist ** 2:
+            return True
+        self.x += dx
+        self.y += dy
+        return False
+
+    def look_at(self, ang, speed=0.1, min_dist=0.1):
+        if self.ang > ang:
+            if self.ang - ang < min_dist:
+                self.ang = ang
+                return True
+            self.ang -= speed * self.game.delta_time
+        elif self.ang < ang:
+            if ang - self.ang < min_dist:
+                self.ang = ang
+                return True
+            self.ang += speed * self.game.delta_time
 
     @property
     def life_percent(self):

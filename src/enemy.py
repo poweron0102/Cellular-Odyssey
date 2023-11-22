@@ -28,7 +28,6 @@ class Enemy(MovingSprite):
     def __init__(self, game, enemy: EnemyType, x, y):
         name, scale, shift, action = enemy.value
         super().__init__(game, name, x, y, scale, shift, action)
-        self.sprite_update = super().update
 
         self.enemy = enemy
         self.health = 100
@@ -66,11 +65,11 @@ class Enemy(MovingSprite):
                     self.game.player.health -= self.damage
 
                     self.game.hud.set_face(1)
-                    self.game.scheduler.add(2, self.game.hud.set_face, 0)
+                    self.game.scheduler.add_dict('face', 8, self.game.hud.set_face, 0)
 
                     self.attack_cooldown = 2
 
-        self.sprite_update()
+        super().update()
 
 
 @njit(fastmath=FastMath)
