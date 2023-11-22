@@ -13,12 +13,12 @@ import random
 from settings import *
 from functions import *
 from in_game import *
-from events import *
 from scheduler import *
 from textures import *
 from parallax import *
 from map import *
 from player import *
+from events import *
 from hud import *
 from ray_caster import *
 from dialogue import *

@@ -84,18 +84,15 @@ class DialogueHandler:
         if len(self._queue) > 0:
             self._queue[0].update(self.game)
 
-    def add(self, dig: Dialogue, poped_func=None, poped_arg=None):
+    def add(self, dig: Dialogue, poped_func=None, *args):
         self._queue.append(dig)
         self._queue_funcs.append(poped_func)
-        self._queue_args.append(poped_arg)
+        self._queue_args.append(*args)
 
     def pop(self):
         self._queue.pop(0)
         if func := self._queue_funcs.pop(0):
-            if arg := self._queue_args.pop(0):
-                func(arg)
-            else:
-                func()
+            func(self._queue_args.pop(0))
         else:
             self._queue_args.pop(0)
 

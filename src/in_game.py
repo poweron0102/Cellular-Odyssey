@@ -3,7 +3,6 @@ from main import *
 
 class InGame(Game):
     scheduler: Scheduler
-    events: Events
     parallax: Parallax
     dialogue_handler: DialogueHandler
     sprite_handler: SpriteHandler

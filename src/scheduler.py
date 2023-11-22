@@ -13,11 +13,7 @@ class Scheduler:
     def update(self):
         for index, function in enumerate(self._functions):
             if self._times[index] < self.game.run_time:
-                if self._args[index] is None:
-                    function()
-                else:
-                    function(self._args[index])
-
+                function(*self._args[index])
                 self._times.pop(index)
                 self._functions.pop(index)
                 self._args.pop(index)
@@ -25,19 +21,17 @@ class Scheduler:
         for key in list(self.functions_dict.keys()):
             time, function, args = self.functions_dict[key]
             if time < self.game.run_time:
-                if args is None:
-                    function()
-                else:
-                    function(args)
+                function(*args)
 
                 self.functions_dict.pop(key)
 
-    def add(self, time, function, args=None):
+    def add(self, time, function, *args):
         self._times.append(self.game.run_time + time)
         self._functions.append(function)
         self._args.append(args)
 
-    def add_dict(self, key, time, function, args=None):
+    def add_dict(self, key, time, function, *args):
+        print(key, time, function, args)
         self.functions_dict[key] = (self.game.run_time + time), function, args
 
     def remove(self, function):

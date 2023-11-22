@@ -109,27 +109,6 @@ class Player:
                 (1, self)
             ])
 
-    def move(self, dist: float, min_dist=5):
-        dx = dist * math.cos(self.ang) * self.game.delta_time
-        dy = dist * math.sin(self.ang) * self.game.delta_time
-        if dx ** 2 + dy ** 2 <= min_dist ** 2:
-            return True
-        self.x += dx
-        self.y += dy
-        return False
-
-    def look_at(self, ang, speed=0.1, min_dist=0.1):
-        if self.ang > ang:
-            if self.ang - ang < min_dist:
-                self.ang = ang
-                return True
-            self.ang -= speed * self.game.delta_time
-        elif self.ang < ang:
-            if ang - self.ang < min_dist:
-                self.ang = ang
-                return True
-            self.ang += speed * self.game.delta_time
-
     @property
     def life_percent(self):
         return self.health / self.max_health

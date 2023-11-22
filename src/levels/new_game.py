@@ -18,8 +18,8 @@ TileSet = [
     Tile(True, True, 'blue', 7),
     Tile(True, True, 'blue', 8),
     Tile(False, False, 'green', 0),  # add action
-    Tile(False, False, 'red', 0),    # add action
-    Tile(False, True, 'black', 9),   # door L
+    Tile(False, False, 'red', 0),  # add action
+    Tile(False, True, 'black', 9),  # door L
     Tile(False, True, 'black', 10),  # door R
     Tile(True, True, 'blue', 11),
     Tile(True, True, 'blue', 12),
@@ -58,7 +58,7 @@ TextureFloor = [
 ]
 
 world_map = np.array([
-   [
+    [
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 7, 13, 8, 8, 13, 7, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -153,7 +153,6 @@ world_map = np.array([
 
 def init(in_game: 'InGame'):
     in_game.scheduler = Scheduler(in_game)
-    in_game.events = Events(True)
     in_game.map = Map(in_game, world_map, TileSet, TextureSet, TextureFloor)
     in_game.player = Player(in_game, *to_map(14, 26.3), 180, PlayerType.Erythrocyte, False)
     in_game.ray_caster = RayCaster(in_game)
@@ -187,21 +186,22 @@ def init(in_game: 'InGame'):
     in_game.sprite_handler.add(Sprite(in_game, 'tree', *to_map(11, 17), scale=1.6, shift=1.2))
     in_game.sprite_handler.add(Sprite(in_game, 'tree', *to_map(17, 17), scale=1.6, shift=1.2))
 
-    in_game.scheduler.add(5, in_game.events.wake_up)
-    in_game.events.add([
-        (in_game.dialogue_handler.add, Dialogue(
-                2,
-                'Ah, i cant get lost again, i need to find the way to the longs.',
-                'AE3803',
-            )),
-        (in_game.dialogue_handler.add, Dialogue(
-                2,
-                'I think i find it, it should be this way.',
-                'AE3803',
-            )),
-        (in_game.player.move, 90),
-        (setattr, in_game.player, 'enable_input', True),
+    """
+    evt = Event(in_game)
+    evt.add([
+        (evt.sleep, 5),
+        (evt.MK_dig, Dialogue(
+            2,
+            'Ah, i cant get lost again, i need to find the way to the longs.',
+            'AE3803',
+        )),
+        (evt.MK_dig, Dialogue(
+            2,
+            'I think i find it, it should be this way.',
+            'AE3803',
+        )),
     ])
+    """
 
 
 def loop(in_game: 'InGame'):
@@ -209,7 +209,6 @@ def loop(in_game: 'InGame'):
         animated.update(in_game.delta_time)
 
     in_game.scheduler.update()
-    in_game.events.update()
     in_game.player.update()
     in_game.action.update()
     in_game.parallax.update()
@@ -219,5 +218,3 @@ def loop(in_game: 'InGame'):
 
     in_game.drawer.update()
     in_game.hud.update()
-
-
