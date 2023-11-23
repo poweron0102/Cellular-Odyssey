@@ -43,6 +43,8 @@ class Player:
         dy = 0
         speed = self.speed * self.game.delta_time
 
+        mouse_move = pg.mouse.get_rel()  # to avoid mouse teleporting
+
         if self.enable_input:
             if keys[pg.K_w]:
                 dx += speed * math.cos(self.ang)
@@ -66,7 +68,6 @@ class Player:
             if mouse_pos[0] > RES[0] - 10:
                 pg.mouse.set_pos(30, mouse_pos[1])
 
-            mouse_move = pg.mouse.get_rel()
             self.ang += mouse_move[0] * Mouse_sens
             if self.ang > 2 * math.pi:
                 self.ang -= 2 * math.pi

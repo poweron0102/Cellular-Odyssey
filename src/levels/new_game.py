@@ -1,3 +1,5 @@
+import math
+
 from main import *
 
 
@@ -186,10 +188,11 @@ def init(in_game: 'InGame'):
     in_game.sprite_handler.add(Sprite(in_game, 'tree', *to_map(11, 17), scale=1.6, shift=1.2))
     in_game.sprite_handler.add(Sprite(in_game, 'tree', *to_map(17, 17), scale=1.6, shift=1.2))
 
-    """
     evt = Event(in_game)
     evt.add([
-        (evt.sleep, 5),
+        (evt.sleep, 1),
+        (evt.MK_move, in_game.player, *to_map(14, 26.2)),
+        (evt.sleep, 1),
         (evt.MK_dig, Dialogue(
             2,
             'Ah, i cant get lost again, i need to find the way to the longs.',
@@ -200,8 +203,10 @@ def init(in_game: 'InGame'):
             'I think i find it, it should be this way.',
             'AE3803',
         )),
+        (evt.MK_move, in_game.player, *to_map(14, 23.5)),
+        (evt.MK_look_at, math.radians(90)),
+        (evt.MK_setattr, in_game.player, 'enable_input', True),
     ])
-    """
 
 
 def loop(in_game: 'InGame'):

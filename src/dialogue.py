@@ -87,12 +87,12 @@ class DialogueHandler:
     def add(self, dig: Dialogue, poped_func=None, *args):
         self._queue.append(dig)
         self._queue_funcs.append(poped_func)
-        self._queue_args.append(*args)
+        self._queue_args.append(args)
 
     def pop(self):
         self._queue.pop(0)
         if func := self._queue_funcs.pop(0):
-            func(self._queue_args.pop(0))
+            func(*self._queue_args.pop(0))
         else:
             self._queue_args.pop(0)
 

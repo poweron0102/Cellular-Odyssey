@@ -70,8 +70,8 @@ class Game:
                 pg.display.toggle_fullscreen()
 
         self.level = import_module(f".{level}", "levels")
-        self.level.init(self)
         self.run_time = 0
+        self.level.init(self)
         if not supress:
             raise NewGame
 

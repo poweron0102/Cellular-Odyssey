@@ -21,9 +21,8 @@ class Scheduler:
         for key in list(self.functions_dict.keys()):
             time, function, args = self.functions_dict[key]
             if time < self.game.run_time:
-                function(*args)
-
                 self.functions_dict.pop(key)
+                function(*args)
 
     def add(self, time, function, *args):
         self._times.append(self.game.run_time + time)
@@ -31,7 +30,6 @@ class Scheduler:
         self._args.append(args)
 
     def add_dict(self, key, time, function, *args):
-        print(key, time, function, args)
         self.functions_dict[key] = (self.game.run_time + time), function, args
 
     def remove(self, function):
