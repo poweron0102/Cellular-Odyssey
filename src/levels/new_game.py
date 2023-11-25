@@ -195,7 +195,7 @@ def init(in_game: 'InGame'):
         (evt.sleep, 1),
         (evt.MK_dig, Dialogue(
             2,
-            'Ah, i cant get lost again, i need to find the way to the longs.',
+            'Ah, i cant get lost again, i need to find the way to the lungs.',
             'AE3803',
         )),
         (evt.MK_dig, Dialogue(
@@ -206,6 +206,12 @@ def init(in_game: 'InGame'):
         (evt.MK_move, in_game.player, *to_map(14, 23.5)),
         (evt.MK_look_at, math.radians(90)),
         (evt.MK_setattr, in_game.player, 'enable_input', True),
+        (evt.wait, lambda: in_game.player.x <= 18 * Tile_size),
+        (evt.MK_dig, Dialogue(
+            2,
+            'What is this? A Pneumococos? Ah!!!!',
+            'AE3803',
+        )),
     ])
 
 

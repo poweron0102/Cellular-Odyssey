@@ -17,19 +17,19 @@ class Event:
     def __init__(self, game):
         self.game: InGame = game
 
-    def add(self, event: list[tuple], auto_schedule=True):
+    def add(self, event: list[tuple], run=True):
         self.events = [FuncArgs(*eve) for eve in event]
-        if auto_schedule:
-            self.auto_schedule()
+        if run:
+            self.run()
 
     def update(self):
         can_pop, can_add = self.events[0]()
         if can_pop:
             self.events.pop(0)
         if can_add:
-            self.auto_schedule()
+            self.run()
 
-    def auto_schedule(self):
+    def run(self):
         if len(self.events) > 0:
             self.game.scheduler.add_dict(self, 0, self.update)
 
@@ -37,7 +37,12 @@ class Event:
         self.game.scheduler.add_dict(self, time, self.update)
         return True, False
 
-    def MK_setattr(self, obj: Any, attr: str, value):
+    @staticmethod
+    def wait(func: Callable, *args):
+        return func(*args), True
+
+    @staticmethod
+    def MK_setattr(obj: Any, attr: str, value):
         setattr(obj, attr, value)
         return True, True
 
@@ -45,7 +50,7 @@ class Event:
         self.game.dialogue_handler.add(
             dig,
             self.game.scheduler.add_dict,
-            self, 0, self.auto_schedule
+            self, 0, self.run
         )
         return True, False
 
