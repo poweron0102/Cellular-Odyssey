@@ -35,7 +35,7 @@ class Dialogue:
     def update(self, game):
         if self.passed_time == 0:
             if self.audio:
-                pg.mixer.music.load(f"assets/dialogue/sound/{self.audio}.mp3")
+                pg.mixer.music.load(f"assets/dialogue/sound/{self.audio}.ogg")
                 pg.mixer.music.play()
 
         if self.passed_time < self.max_time:
@@ -68,9 +68,12 @@ class Dialogue:
         else:
             if game.player.interact:
                 game.dialogue_handler.pop()
+                self.passed_time = 0
+                self.max_time = 0.1
             game.drawer.to_draw.append((4, (self.final_img, self.frame_x, self.frame_y)))
 
         self.passed_time += game.delta_time * 1000
+
 
 
 class DialogueHandler:

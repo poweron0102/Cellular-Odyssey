@@ -147,10 +147,3 @@ def dialogue(item, screen, game):
 
     screen.blit(img, (x, y))
 
-
-@add_draw_underwrite
-def floor(item, screen, game):
-    buffer_img, buffer_aph = item
-    img = pg.surfarray.make_surface(buffer_img)
-    img = pg.transform.scale_by(img, SCALE)
-    screen.blit(img, (0, 0))

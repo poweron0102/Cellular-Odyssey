@@ -44,8 +44,9 @@ class Sprite:
             item = view_dist, self.scale, self.image, self.height, self.screen_x, self.height_shift
             self.game.drawer.to_draw.append((3, item))
 
-        if self.action:
-            self.game.action.do_action(self.action, self)
+        if self.action and self.game.player.interact and self.dist < 64:
+            self.action(self)
+            self.action = None
 
 
 class SpriteHandler:
@@ -70,16 +71,18 @@ class MovingSprite(Sprite):
         self.time = 0
         self.route = route if route else []
         self._route = []
+        self.walking = True
 
     def go_to(self, x, y, min_dist=1):
-        dx, dy = x - self.x, y - self.y
-        self.angle = math.atan2(dx, dy)
-        if min_dist:
-            if dx ** 2 + dy ** 2 <= min_dist ** 2:
-                return True
-        self.x += math.sin(self.angle) * (self.speed + random.randint(-10, 10)) * self.game.delta_time
-        self.y += math.cos(self.angle) * (self.speed + random.randint(-10, 10)) * self.game.delta_time
-        return False
+        if self.walking:
+            dx, dy = x - self.x, y - self.y
+            self.angle = math.atan2(dx, dy)
+            if min_dist:
+                if dx ** 2 + dy ** 2 <= min_dist ** 2:
+                    return True
+            self.x += math.sin(self.angle) * (self.speed + random.randint(-10, 10)) * self.game.delta_time
+            self.y += math.cos(self.angle) * (self.speed + random.randint(-10, 10)) * self.game.delta_time
+            return False
 
     def update(self):
         if len(self.route) > 0 and len(self._route) == 0:

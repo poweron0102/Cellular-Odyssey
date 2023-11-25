@@ -14,23 +14,34 @@ class FuncArgs:
 class Event:
     events: list[FuncArgs]
 
-    def __init__(self, game):
+    def __init__(self, game, any: Any = None):
         self.game: InGame = game
+        self.any = any
 
-    def add(self, event: list[tuple], run=True):
+        self.current_event = 0
+
+    def clone(self) -> 'Event':
+        evt = Event(self.game, self.any)
+        # if hasattr(self, 'events'):
+        #    evt.events = self.events.copy()
+        evt.events = self.events.copy()
+        return evt
+
+    def add(self, event: list[tuple[Callable, Any]], run=False):
         self.events = [FuncArgs(*eve) for eve in event]
         if run:
             self.run()
 
     def update(self):
-        can_pop, can_add = self.events[0]()
+        can_pop, can_add = self.events[self.current_event]()
         if can_pop:
-            self.events.pop(0)
+            self.current_event += 1
         if can_add:
             self.run()
 
-    def run(self):
-        if len(self.events) > 0:
+    def run(self, *args):
+        self.any = args if len(args) > 0 else self.any
+        if len(self.events) > self.current_event:
             self.game.scheduler.add_dict(self, 0, self.update)
 
     def sleep(self, time):
@@ -41,8 +52,23 @@ class Event:
     def wait(func: Callable, *args):
         return func(*args), True
 
-    @staticmethod
-    def MK_setattr(obj: Any, attr: str, value):
+    def restart(self, run=True):
+        self.current_event = 0
+        return False, run
+
+    def go_to(self, event: int):
+        self.current_event = event
+        return False, True
+
+    def IF(self, condition: Callable, *args):
+        if condition(*args):
+            return True, True
+        self.current_event += 1
+        return True, True
+
+    def setattr(self, obj: Any, attr: str, value):
+        if obj is None:
+            obj = self.any[0]
         setattr(obj, attr, value)
         return True, True
 
@@ -55,12 +81,14 @@ class Event:
         return True, False
 
     def MK_move(self, obj: 'Player | Sprite', x, y, min_dist=5):
+        if obj is None:
+            obj = self.any
         dx, dy = x - obj.x, y - obj.y
-        obj.angle = math.atan2(dx, dy)
+        angle = math.atan2(dx, dy)
         if dx ** 2 + dy ** 2 <= min_dist ** 2:
             return True, True
-        obj.x += math.sin(obj.angle) * obj.speed * self.game.delta_time
-        obj.y += math.cos(obj.angle) * obj.speed * self.game.delta_time
+        obj.x += math.sin(angle) * obj.speed * self.game.delta_time
+        obj.y += math.cos(angle) * obj.speed * self.game.delta_time
         return False, True
 
     def MK_look_at(self, ang, speed=0.5, min_dist=0.01):
@@ -76,18 +104,7 @@ class Event:
             self.game.player.ang += speed * self.game.delta_time
         return False, True
 
-
-"""
-e = Events()
-e.add([
-    (lambda: print('oi'),),
-    (lambda: print('oi2'),),
-    (lambda: print('oi7'),),
-    (print, 'Nathan'),
-    (print, "Nathan", "é", "legal"),
-])
-
-while True:
-    e.update()
-    input()
-"""
+    def debug(self):
+        print('não args: ', self)
+        print(self)
+        return True, True
