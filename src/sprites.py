@@ -53,13 +53,22 @@ class SpriteHandler:
     def __init__(self, game):
         self.game: InGame = game
         self.sprites: list[Sprite] = []
+        self.sprites_dict: dict[Any, Sprite] = {}
 
     def update(self):
         for sprite in self.sprites:
             sprite.update()
+        for sprite in self.sprites_dict.values():
+            sprite.update()
 
     def add(self, sprite: Sprite):
         self.sprites.append(sprite)
+
+    def add_dict(self, sprite: Sprite, key):
+        self.sprites_dict[key] = sprite
+
+    def remove_dict(self, key):
+        self.sprites_dict.pop(key)
 
 
 class MovingSprite(Sprite):

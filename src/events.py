@@ -33,7 +33,11 @@ class Event:
             self.run()
 
     def update(self):
-        can_pop, can_add = self.events[self.current_event]()
+        result = self.events[self.current_event]()
+        if type(result) is tuple:
+            can_pop, can_add = result
+        else:
+            can_pop, can_add = True, True
         if can_pop:
             self.current_event += 1
         if can_add:
@@ -72,26 +76,47 @@ class Event:
         setattr(obj, attr, value)
         return True, True
 
-    def MK_dig(self, dig: 'Dialogue'):
-        self.game.dialogue_handler.add(
-            dig,
-            self.game.scheduler.add_dict,
-            self, 0, self.run
-        )
-        return True, False
+    def MK_dig(self, dig: 'Dialogue', keep_going=False):
+        if keep_going:
+            self.game.dialogue_handler.add(
+                dig,
+            )
+        else:
+            self.game.dialogue_handler.add(
+                dig,
+                self.game.scheduler.add_dict,
+                self, 0, self.run
+            )
+        return True, keep_going
 
-    def MK_move(self, obj: 'Player | Sprite', x, y, min_dist=5):
+    def MK_move(self, obj: 'Player | Sprite', x, y, min_dist=5, speed=None):
         if obj is None:
             obj = self.any
         dx, dy = x - obj.x, y - obj.y
         angle = math.atan2(dx, dy)
         if dx ** 2 + dy ** 2 <= min_dist ** 2:
             return True, True
-        obj.x += math.sin(angle) * obj.speed * self.game.delta_time
-        obj.y += math.cos(angle) * obj.speed * self.game.delta_time
+        speed = speed if speed else obj.speed
+        obj.x += math.sin(angle) * speed * self.game.delta_time
+        obj.y += math.cos(angle) * speed * self.game.delta_time
         return False, True
 
-    def MK_look_at(self, ang, speed=0.5, min_dist=0.01):
+    def MK_look_at(self, ang, speed=1, min_dist=0.05):
+        if self.game.player.ang > ang:
+            if self.game.player.ang - ang < min_dist:
+                self.game.player.ang = ang
+                return True, True
+            self.game.player.ang -= speed * self.game.delta_time
+        elif self.game.player.ang < ang:
+            if ang - self.game.player.ang < min_dist:
+                self.game.player.ang = ang
+                return True, True
+            self.game.player.ang += speed * self.game.delta_time
+        return False, True
+
+    def MK_look_to(self, x, y, speed=1, min_dist=0.05):
+        dx, dy = x - self.game.player.x, y - self.game.player.y
+        ang = angle_to_fist(math.atan2(dy, dx))
         if self.game.player.ang > ang:
             if self.game.player.ang - ang < min_dist:
                 self.game.player.ang = ang
@@ -105,6 +130,5 @@ class Event:
         return False, True
 
     def debug(self):
-        print('não args: ', self)
         print(self)
         return True, True

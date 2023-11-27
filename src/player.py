@@ -37,6 +37,11 @@ class Player:
     def update(self):
         self.health = min(self.health + self.game.delta_time, self.max_health)
 
+        tile = self.game.map.tile(self.x, self.y)
+        if tile.action:
+            tile.action(tile, *tile.action_args)
+            tile.action = None
+
         # Movimento WASD  -=-=-=-=-=-=-=-=-=-=-=-=-=-=
         keys = pg.key.get_pressed()
         dx = 0

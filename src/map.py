@@ -3,17 +3,22 @@ import numpy as np
 from main import *
 
 
+@dataclasses.dataclass(slots=True)
 class Tile:
-    def __init__(self, is_wall, render, color, texture: int | None, action=None, action_args=None):
-        self.is_wall = is_wall
-        self.render = render
-        self.color = color
-        self.action = action
-        self.action_args = action_args
-        self.texture = texture
+    is_wall: bool
+    render: bool
+    color: pg.Color
+    texture: int
+    action: 'None | Callable' = None
+    action_args: tuple[any] = ()
 
 
 class Map:
+    __slots__ = (
+        'game', 'tile_set', 'tiles_to_render', 'texture_set', 'world_wall', 'world_floor', 'world_ceiling',
+        'texture_floor', 'texture_floor_alpha'
+    )
+
     def __init__(
             self, game, world_map,
             tile_set: list[Tile], texture_set: list['None | Texture'], texture_floor: list[str]
@@ -55,6 +60,9 @@ class Map:
             [tile_id for tile_id, tile in enumerate(self.tile_set) if tile.render], dtype=np.uint8
         )
 
+    def tile(self, x, y) -> Tile:
+        return self.tile_set[self.get_tile(x, y)]
+
     def is_wall(self, x, y) -> bool:
         return self.tile_set[self.get_tile(x, y)].is_wall
 
@@ -66,6 +74,9 @@ class Map:
 
     def tile_action(self, x, y):
         return self.tile_set[self.get_tile(x, y)].action
+
+    def tile_args(self, x, y):
+        return self.tile_set[self.get_tile(x, y)].action_args
 
     def is_render(self, x, y) -> bool:
         return self.tile_set[self.get_tile(x, y)].render

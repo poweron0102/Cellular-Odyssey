@@ -2,6 +2,7 @@ import sys
 import time
 from types import ModuleType
 import builtins
+import dataclasses
 from enum import Enum
 from importlib import import_module
 import pygame as pg
