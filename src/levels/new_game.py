@@ -4,7 +4,8 @@ import levels.organs as organs
 
 
 def init(in_game: 'InGame'):
-    organs.init(in_game, PlayerType.Erythrocyte)
+    in_game.player = Player(in_game, *to_map(14, 25.8), 180, PlayerType.Erythrocyte)
+    organs.init(in_game)
     in_game.player.enable_input = False
 
     macrophage = Sprite(
@@ -33,29 +34,28 @@ def init(in_game: 'InGame'):
     evt.add([
         # compilação
         (evt.sleep, 1),
-        (evt.MK_move, in_game.player, *to_map(14, 25.7)),
+        (evt.move, in_game.player, *to_map(14, 25.7)),
         (evt.sleep, 1),
-
         # Macrófago
-        (evt.MK_dig, Dialogue(
+        (evt.dig, Dialogue(
             6,
             'I better hurry and deliver this to the lungs. Ok, just need to turn rigth here to get to the lungs.',
             'AE3803',
             'tothelungs'
         ), True),
-        (evt.MK_move, in_game.player, *to_map(14, 23.5), 5, 100),
-        (evt.MK_look_at, math.radians(270), 0.6),
-        (evt.MK_move, in_game.player, *to_map(10.8, 23.5), 5, 100),
+        (evt.move, in_game.player, *to_map(14, 23.5), 5, 100),
+        (evt.look_at, math.radians(270), 0.6),
+        (evt.move, in_game.player, *to_map(10.8, 23.5), 5, 100),
         (evt.sleep, 0.5),
         (in_game.sprite_handler.add_dict, macrophage, macrophage),
-        (evt.MK_move, in_game.player, *to_map(12.5, 23.5)),
-        (evt.MK_dig, Dialogue(
+        (evt.move, in_game.player, *to_map(12.5, 23.5)),
+        (evt.dig, Dialogue(
             2,
             'Oh, I am sorry, but this the spleen sweetie.',
             'Macrophage_0',
             'baco'
         )),
-        (evt.MK_dig, Dialogue(
+        (evt.dig, Dialogue(
             2,
             'Spleen?, I thought I was going to the lungs. Sorry, I am new here.',
             'AE3803',
@@ -68,13 +68,13 @@ def init(in_game: 'InGame'):
         (evt.wait, lambda: in_game.player.x <= 16.5 * Tile_size),
         (evt.setattr, in_game.player, 'enable_input', False),
         (in_game.sprite_handler.add_dict, pneumococos, pneumococos),
-        (evt.MK_look_to, *to_map(14, 14), 2),
-        (evt.MK_dig, Dialogue(
+        (evt.look_to, *to_map(14, 14), 2),
+        (evt.dig, Dialogue(
             2,
             'What is this? A Pneumococos? Ah!!!!',
             'AE3803',
         )),
-        (evt.MK_dig, Dialogue(
+        (evt.dig, Dialogue(
             16,
             'Well now this is a delightful spot to my brother and I get really comfortable in here.'
             'It is not to hot, not to cold, and there is plenty of food to last more than a life cycle.'
@@ -83,8 +83,8 @@ def init(in_game: 'InGame'):
             'pneumosay'
         )),
         (in_game.sprite_handler.add_dict, neutrophil, neutrophil),
-        (evt.MK_move, neutrophil, *to_map(14, 14), 32, 200),
-        (evt.MK_dig, Dialogue(
+        (evt.move, neutrophil, *to_map(14, 14), 32, 200),
+        (evt.dig, Dialogue(
             4,
             'Die, you germ! Take that!',
             'todo',  # TODO:
@@ -92,50 +92,50 @@ def init(in_game: 'InGame'):
         ), True),
         (evt.sleep, 2.5),
         (in_game.sprite_handler.remove_dict, pneumococos),
-        (evt.MK_dig, Dialogue(
+        (evt.dig, Dialogue(
             4,
             'Here is white blood cell, Neutrophil division U1146. The invader germs has been eliminated.',
             'todo',  # TODO:
             'neutropilo2'
         )),
-        (evt.MK_dig, Dialogue(
+        (evt.dig, Dialogue(
             2,
             'The white blood cell is so strong. I am glad I am not a germ.',
             'AE3803',
         )),
-        (evt.MK_dig, Dialogue(
+        (evt.dig, Dialogue(
             2,
             'Hi Red Blood Cell, I am Neutrophil, a white blood cell. I am here to protect you.',
             'todo'  # TODO:
         )),
-        (evt.MK_dig, Dialogue(
+        (evt.dig, Dialogue(
             4,
             'Well i just wanna to thank you for saving my life. I was in so much danger.',
             'AE3803',
             'save-mylife'
         )),
-        (evt.MK_dig, Dialogue(
+        (evt.dig, Dialogue(
             4,
             'That was nothing, I was only carrying out my job. Ahh, sorry i mean, you are welcome.',
             'todo',  # TODO:
             'thatwasonlymyjob'
         )),
-        (evt.MK_dig, Dialogue(
+        (evt.dig, Dialogue(
             2,
             'They a going to the lungs. I should stop them.',
             'todo'  # TODO:
         )),
-        (evt.MK_dig, Dialogue(
+        (evt.dig, Dialogue(
             2,
             'I am going to the lungs too. I should follow you.',
             'AE3803'
         )),
-        (evt.MK_dig, Dialogue(
+        (evt.dig, Dialogue(
             2,
             'Ok, the lungs are this way.',
             'todo'  # TODO:
         )),
-        (evt.MK_move, neutrophil, *to_map(15, 2), 20, 200),
+        (evt.move, neutrophil, *to_map(15, 2), 20, 200),
 
 
         (evt.setattr, in_game.player, 'enable_input', True),
@@ -145,13 +145,13 @@ def init(in_game: 'InGame'):
     evt.add([
         (evt.wait, lambda: 2.5 >= in_game.player.y / Tile_size and 13 <= in_game.player.x / Tile_size <= 15),
         (evt.setattr, in_game.player, 'enable_input', False),
-        (evt.MK_dig, Dialogue(
+        (evt.dig, Dialogue(
             2,
             'I should follow the White Blood Cell to the lungs.',
             'AE3803',
         ), True),
-        (evt.MK_look_to, *to_map(4.5, 14), 2, 0.2),
-        (evt.MK_move, in_game.player, *to_map(4.5, 14), 20),
+        (evt.look_to, *to_map(4.5, 14), 2, 0.2),
+        (evt.move, in_game.player, *to_map(4.5, 14), 20),
         (evt.setattr, in_game.player, 'enable_input', True),
         (evt.restart, True)
     ], True)
@@ -160,13 +160,13 @@ def init(in_game: 'InGame'):
     evt.add([
         (evt.wait, lambda: 25.5 <= in_game.player.y / Tile_size and 13 <= in_game.player.x / Tile_size <= 15),
         (evt.setattr, in_game.player, 'enable_input', False),
-        (evt.MK_dig, Dialogue(
+        (evt.dig, Dialogue(
             2,
             'I should follow the White Blood Cell to the lungs.',
             'AE3803',
         ), True),
-        (evt.MK_look_to, *to_map(24.5, 14), 2, 0.2),
-        (evt.MK_move, in_game.player, *to_map(24.5, 14), 20),
+        (evt.look_to, *to_map(24.5, 14), 2, 0.2),
+        (evt.move, in_game.player, *to_map(24.5, 14), 20),
         (evt.setattr, in_game.player, 'enable_input', True),
         (evt.restart, True)
     ], True)

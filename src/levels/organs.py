@@ -12,7 +12,7 @@ TileSet = [
     Tile(True, True, 'blue', 5),
     Tile(True, True, 'blue', 7),
     Tile(True, True, 'blue', 8),
-    Tile(False, False, 'green', 0, print, ('entrou!', )),  # add action
+    Tile(False, False, 'green', 0,),  # add action added below
     Tile(False, False, 'red', 0),  # add action added below
     Tile(False, True, 'black', 9),  # door L
     Tile(False, True, 'black', 10),  # door R
@@ -146,10 +146,10 @@ world_map = np.array([
 ])
 
 
-def init(in_game: 'InGame', player_type: PlayerType):
+def init(in_game: 'InGame'):
     in_game.scheduler = Scheduler(in_game)
     in_game.map = Map(in_game, world_map, TileSet, TextureSet, TextureFloor)
-    in_game.player = Player(in_game, *to_map(14, 25.8), 180, player_type)
+    in_game.player = Player(in_game, *to_map(14, 25.8), 180, in_game.player.player_type)
     in_game.ray_caster = RayCaster(in_game)
     in_game.action = Actions(in_game)
     in_game.drawer = Drawer(in_game)
@@ -161,26 +161,27 @@ def init(in_game: 'InGame', player_type: PlayerType):
     evt = Event(in_game)
     evt.add([
         (evt.setattr, in_game.player, 'enable_input', False),
-        (evt.MK_dig, Dialogue(
+        (evt.dig, Dialogue(
             2,
             'Excuse me, that valve is exit only.',
             'todo',  # TODO:
             'exitonly'
         ), True),
         (evt.IF, lambda: in_game.player.name == 'Erythrocyte'),
-        (evt.MK_dig, Dialogue(
+        (evt.dig, Dialogue(
             3,
             'Sorry, I didn\'t know. I still new here, I don\'t know any thing.',
             'todo',  # TODO:
             'soryidontknow'
         )),
-        (evt.MK_look_to, *to_map(14, 25), 2, 0.2),
-        (evt.MK_move, in_game.player, *to_map(14, 25), 20),
+        (evt.look_to, *to_map(14, 25), 2, 0.2),
+        (evt.move, in_game.player, *to_map(14, 25), 20),
         (evt.setattr, in_game.player, 'enable_input', True),
         (evt.setattr, None, 'action', evt.run),
         (evt.restart, False)
     ])
     TileSet[9].action = evt.run
+    TileSet[8].action = lambda x: in_game.new_game('vens')
 
     """
     evt = Event(in_game)
@@ -222,7 +223,7 @@ def init(in_game: 'InGame', player_type: PlayerType):
             (evt.IF, lambda: not in_game.player.enable_input),
             (evt.restart, False),
             (evt.setattr, None, 'walking', False),
-            (evt.MK_dig, Dialogue(
+            (evt.dig, Dialogue(
                 2,
                 'It is a beautiful day, isn\'t it?',
                 'ordcell',

@@ -2,6 +2,21 @@ from main import *
 from typing import Callable, Any
 
 
+def export(func):
+    """
+    Exporta a função para o escopo global com o nome E_<nome da função>
+    """
+    def new_func(*args, **kwargs):
+        return func, args, kwargs
+
+    original_name = func.__name__
+
+    # Atribui a segunda função com o nome modificado
+    globals()[f"E_{original_name}"] = new_func
+
+    return func
+
+
 class FuncArgs:
     def __init__(self, func, *args):
         self.func = func
@@ -76,7 +91,7 @@ class Event:
         setattr(obj, attr, value)
         return True, True
 
-    def MK_dig(self, dig: 'Dialogue', keep_going=False):
+    def dig(self, dig: 'Dialogue', keep_going=False):
         if keep_going:
             self.game.dialogue_handler.add(
                 dig,
@@ -89,7 +104,7 @@ class Event:
             )
         return True, keep_going
 
-    def MK_move(self, obj: 'Player | Sprite', x, y, min_dist=5, speed=None):
+    def move(self, obj: 'Player | Sprite', x, y, min_dist=5, speed=None):
         if obj is None:
             obj = self.any
         dx, dy = x - obj.x, y - obj.y
@@ -101,7 +116,7 @@ class Event:
         obj.y += math.cos(angle) * speed * self.game.delta_time
         return False, True
 
-    def MK_look_at(self, ang, speed=1, min_dist=0.05):
+    def look_at(self, ang, speed=1, min_dist=0.05):
         if self.game.player.ang > ang:
             if self.game.player.ang - ang < min_dist:
                 self.game.player.ang = ang
@@ -114,7 +129,7 @@ class Event:
             self.game.player.ang += speed * self.game.delta_time
         return False, True
 
-    def MK_look_to(self, x, y, speed=1, min_dist=0.05):
+    def look_to(self, x, y, speed=1, min_dist=0.05):
         dx, dy = x - self.game.player.x, y - self.game.player.y
         ang = angle_to_fist(math.atan2(dy, dx))
         if self.game.player.ang > ang:

@@ -35,11 +35,17 @@ class Dialogue:
     def update(self, game):
         if self.passed_time == 0:
             if self.audio:
-                pg.mixer.music.load(f"assets/dialogue/sound/{self.audio}.ogg")
-                pg.mixer.music.play()
+                sound = pg.mixer.Sound(f'assets/dialogue/sound/{self.audio}.ogg')
+                sound.play()
+
+                sound.set_volume(VOLUME / 100)
 
         if self.passed_time < self.max_time:
             # print(round(len(self.dialogue) * (self.passed_time / self.max_time) + 0.5))
+            if game.player.interact:
+                self.passed_time += self.max_time//len(self.dialogue)
+                if self.passed_time >= self.max_time:
+                    self.passed_time = self.max_time - 0.01
             dialog_id = int(len(self.dialogue) * (self.passed_time / self.max_time))
             if current_dialogue := self.dialogue[dialog_id]:
                 self.falado_line[self.current_line] += current_dialogue + ' '
