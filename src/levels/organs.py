@@ -157,6 +157,7 @@ def init(in_game: 'InGame'):
     in_game.parallax = Parallax(None, "ceu", in_game)
     in_game.sprite_handler = SpriteHandler(in_game)
     in_game.hud = Hud(in_game)
+    in_game.gun = Gun(in_game)
 
     evt = Event(in_game)
     evt.add([
@@ -222,13 +223,13 @@ def init(in_game: 'InGame'):
         evt.add([
             (evt.IF, lambda: not in_game.player.enable_input),
             (evt.restart, False),
-            (evt.setattr, None, 'walking', False),
+            (evt.setattr, None, 'walking_route', False),
             (evt.dig, Dialogue(
                 2,
                 'It is a beautiful day, isn\'t it?',
                 'ordcell',
             )),
-            (evt.setattr, None, 'walking', True),
+            (evt.setattr, None, 'walking_route', True),
             (evt.setattr, None, 'action', evt.run),
             (evt.restart, False),
         ])
@@ -291,3 +292,4 @@ def loop(in_game: 'InGame'):
 
     in_game.drawer.update()
     in_game.hud.update()
+    in_game.gun.update()

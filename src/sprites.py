@@ -43,6 +43,7 @@ class Sprite:
         if -self.width / 2 < self.screen_x < RES[0] + (self.width / 2) and view_dist > 10:
             item = view_dist, self.scale, self.image, self.height, self.screen_x, self.height_shift
             self.game.drawer.to_draw.append((3, item))
+            self.game.sprite_handler.sprites_seeing.append(self)
 
         if self.action and self.game.player.interact and self.dist < 64:
             self.action(self)
@@ -53,9 +54,11 @@ class SpriteHandler:
     def __init__(self, game):
         self.game: InGame = game
         self.sprites: list[Sprite] = []
+        self.sprites_seeing: list[Sprite] = []
         self.sprites_dict: dict[Any, Sprite] = {}
 
     def update(self):
+        self.sprites_seeing.clear()
         for sprite in self.sprites:
             sprite.update()
         for sprite in self.sprites_dict.values():
@@ -80,26 +83,26 @@ class MovingSprite(Sprite):
         self.time = 0
         self.route = route if route else []
         self._route = []
-        self.walking = True
+        self.walking_route = True
 
-    def go_to(self, x, y, min_dist=1):
-        if self.walking:
-            dx, dy = x - self.x, y - self.y
-            self.angle = math.atan2(dx, dy)
-            if min_dist:
-                if dx ** 2 + dy ** 2 <= min_dist ** 2:
-                    return True
-            self.x += math.sin(self.angle) * (self.speed + random.randint(-10, 10)) * self.game.delta_time
-            self.y += math.cos(self.angle) * (self.speed + random.randint(-10, 10)) * self.game.delta_time
-            return False
+    def go_to(self, x, y, min_dist=5):
+        dx, dy = x - self.x, y - self.y
+        self.angle = math.atan2(dx, dy)
+        if min_dist:
+            if dx ** 2 + dy ** 2 <= min_dist ** 2:
+                return True
+        self.x += math.sin(self.angle) * (self.speed + random.randint(-10, 10)) * self.game.delta_time
+        self.y += math.cos(self.angle) * (self.speed + random.randint(-10, 10)) * self.game.delta_time
+        return False
 
     def update(self):
-        if len(self.route) > 0 and len(self._route) == 0:
-            self._route = self.route.copy()
-            self.x, self.y = self._route[0][0], self._route[0][1]
+        if self.walking_route:
+            if len(self.route) > 0 and len(self._route) == 0:
+                self._route = self.route.copy()
+                self.x, self.y = self._route[0][0], self._route[0][1]
 
-        if len(self._route) > 0:
-            if self.go_to(self._route[0][0], self._route[0][1]):
-                self._route.pop(0)
+            if len(self._route) > 0:
+                if self.go_to(self._route[0][0], self._route[0][1]):
+                    self._route.pop(0)
 
         super().update()

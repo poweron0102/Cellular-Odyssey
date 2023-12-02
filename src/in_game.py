@@ -12,3 +12,4 @@ class InGame(Game):
     player: Player
     hud: Hud
     map: Map
+    gun: Gun

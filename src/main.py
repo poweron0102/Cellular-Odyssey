@@ -22,6 +22,7 @@ from map import *
 from player import *
 from events import *
 from hud import *
+from gun import *
 from ray_caster import *
 from dialogue import *
 from sprites import *

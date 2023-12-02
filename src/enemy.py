@@ -6,8 +6,8 @@ from main import *
 class EnemyType(Enum):
     Pneumococos = (
         "Pneumococos",
-        1,
-        0.8,
+        0.9,
+        0.7,
         None
     )
     Staphylococcus = (
@@ -25,9 +25,9 @@ class EnemyType(Enum):
 
 
 class Enemy(MovingSprite):
-    def __init__(self, game, enemy: EnemyType, x, y):
+    def __init__(self, game, enemy: EnemyType, x, y, route=None):
         name, scale, shift, action = enemy.value
-        super().__init__(game, name, x, y, scale, shift, action)
+        super().__init__(game, name, x, y, scale, shift, action, route=route)
 
         self.enemy = enemy
         self.health = 100
@@ -54,12 +54,11 @@ class Enemy(MovingSprite):
         return numba_seeing_player(sprite_x, sprite_y, player_dist, world_map, is_render, angle_ray)
 
     def update(self):
-        self.time += self.game.delta_time
-        if self.time > 1:
-            self.time -= 1
         self.attack_cooldown -= self.game.delta_time
 
         if self.seeing_player():
+            self.walking_route = False
+            self.game.scheduler.add_dict((self, 'rout'), 10, setattr, self, 'walking_route', True)
             if self.go_to(self.game.player.x, self.game.player.y, 92):
                 if self.attack_cooldown <= 0:
                     self.game.player.health -= self.damage

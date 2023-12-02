@@ -1,12 +1,31 @@
 from main import *
 
 
+def attack_neutrophil(player):
+    for sprite in player.game.sprite_handler.sprites_seeing:
+        if hasattr(sprite, 'enemy'):
+            # if 320 < sprite.screen_x / SCALE_RES[0] < 960:
+            if 427 < sprite.screen_x / SCALE_RES[0] < 853 and sprite.dist < Tile_size * 2:  # 1/3 da tela
+                sprite.health -= player.damage
+                if sprite.health <= 0:
+                    player.game.sprite_handler.sprites.remove(sprite)
+
+
+def super_neutrophil(player):
+    for sprite in player.game.sprite_handler.sprites_seeing:
+        if hasattr(sprite, 'enemy'):
+            if 320 < sprite.screen_x / SCALE_RES[0] < 960 and sprite.dist < Tile_size:
+                sprite.health -= player.damage * 2
+                if sprite.health <= 0:
+                    player.game.sprite_handler.sprites.remove(sprite)
+
+
 class PlayerType(Enum):
-    # speed, health, damage, attack_func
-    Erythrocyte = 'Erythrocyte', 200, 200, 0, None
-    Neutrophil = 'Neutrophil', 200, 200, 10, None
-    Macrophage = 'Macrophage', 150, 500, 25, None
-    BCell = 'BCell', 200, 200, 10, None
+    # name, speed, health, damage, attack_func, attack_cooldown, super_func, super_cooldown
+    Erythrocyte = 'Erythrocyte', 200, 200, 0, None, 1, None, 1
+    Neutrophil = 'Neutrophil', 200, 200, 20, attack_neutrophil, 0.5, super_neutrophil, 1
+    Macrophage = 'Macrophage', 150, 500, 50, None, 1, None, 5
+    BCell = 'BCell', 200, 200, 10, None, 0.1, None, 10
 
 
 class Player:
@@ -18,13 +37,18 @@ class Player:
         self.ang = math.radians(ang)
 
         self.player_type = player_type
-        name, speed, health, damage, attack_func = player_type.value
+        name, speed, health, damage, attack_func, attack_cooldown, super_func, super_cooldown = player_type.value
         self.name = name
         self.speed = speed
         self.health = health
         self.max_health = health
         self.damage = damage
+
         self.attack_func = attack_func
+        self.attack_cooldown = attack_cooldown
+
+        self.super_func = super_func
+        self.super_cooldown = super_cooldown
 
         self.enable_input = enable_input
 
@@ -36,11 +60,16 @@ class Player:
 
     def update(self):
         self.health = min(self.health + self.game.delta_time, self.max_health)
+        self.attack_cooldown = max(self.attack_cooldown - self.game.delta_time, 0)
+        self.super_cooldown = max(self.super_cooldown - self.game.delta_time, 0)
 
         tile = self.game.map.tile(self.x, self.y)
         if tile.action:
             tile.action(tile, *tile.action_args)
             tile.action = None
+
+        if self.health < 0:
+            self.game.new_game('game_over', (1280, 720))
 
         # Movimento WASD  -=-=-=-=-=-=-=-=-=-=-=-=-=-=
         keys = pg.key.get_pressed()
@@ -73,6 +102,13 @@ class Player:
             if mouse_pos[0] > RES[0] - 10:
                 pg.mouse.set_pos(30, mouse_pos[1])
 
+            if pg.mouse.get_pressed()[0] and self.attack_cooldown <= 0:
+                self.attack_func(self)
+                self.attack_cooldown = self.player_type.value[5]
+            elif pg.mouse.get_pressed()[2] and self.super_cooldown <= 0:
+                self.super_func(self)
+                self.super_cooldown = self.player_type.value[7]
+
             self.ang += mouse_move[0] * Mouse_sens
             if self.ang > 2 * math.pi:
                 self.ang -= 2 * math.pi
@@ -98,6 +134,11 @@ class Player:
             print("Player mod: ", self.x // Tile_size, self.y // Tile_size)
         else:
             self.debug = False
+
+        if keys[pg.K_ESCAPE] and not self.keys[pg.K_ESCAPE]:
+            self.game.scheduler.add_dict('exit', 1.5, self.game.new_game, 'main_menu', (1280, 720))
+        if not keys[pg.K_ESCAPE] and self.keys[pg.K_ESCAPE]:
+            self.game.scheduler.remove_dict('exit')
 
         if keys[pg.K_m] and not self.keys[pg.K_m]:
             self.open_map = not self.open_map

@@ -24,7 +24,7 @@ class Scheduler:
                 self.functions_dict.pop(key)
                 function(*args)
 
-    def add(self, time, function, *args):
+    def add(self, time: int | float, function, *args):
         self._times.append(self.game.run_time + time)
         self._functions.append(function)
         self._args.append(args)
