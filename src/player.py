@@ -1,25 +1,6 @@
 from main import *
 
 
-def attack_neutrophil(player):
-    for sprite in player.game.sprite_handler.sprites_seeing:
-        if hasattr(sprite, 'enemy'):
-            # if 320 < sprite.screen_x / SCALE_RES[0] < 960:
-            if 427 < sprite.screen_x / SCALE_RES[0] < 853 and sprite.dist < Tile_size * 2:  # 1/3 da tela
-                sprite.health -= player.damage
-                if sprite.health <= 0:
-                    player.game.sprite_handler.sprites.remove(sprite)
-
-
-def super_neutrophil(player):
-    for sprite in player.game.sprite_handler.sprites_seeing:
-        if hasattr(sprite, 'enemy'):
-            if 320 < sprite.screen_x / SCALE_RES[0] < 960 and sprite.dist < Tile_size:
-                sprite.health -= player.damage * 2
-                if sprite.health <= 0:
-                    player.game.sprite_handler.sprites.remove(sprite)
-
-
 class PlayerType(Enum):
     # name, speed, health, damage, attack_func, attack_cooldown, super_func, super_cooldown
     Erythrocyte = 'Erythrocyte', 200, 200, 0, None, 1, None, 1

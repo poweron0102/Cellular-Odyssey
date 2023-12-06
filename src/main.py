@@ -1,15 +1,24 @@
 import sys
+import os
 import time
 from types import ModuleType
 import builtins
 import dataclasses
 from enum import Enum
 from importlib import import_module
-import pygame as pg
-import numpy as np
-from numba import njit
 import math
 import random
+
+try:
+    import pygame as pg
+    import numpy as np
+    from numba import njit
+except ImportError:
+    print("Erro ao importar pygame, numpy ou numba.\nInstalando dependências...")
+    os.system('pip install pygame numpy numba')
+    import pygame as pg
+    import numpy as np
+    from numba import njit
 
 
 from settings import *
@@ -19,10 +28,10 @@ from scheduler import *
 from textures import *
 from parallax import *
 from map import *
+from gun import *
 from player import *
 from events import *
 from hud import *
-from gun import *
 from ray_caster import *
 from dialogue import *
 from sprites import *

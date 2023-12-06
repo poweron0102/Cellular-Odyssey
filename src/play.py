@@ -1,6 +1,9 @@
 import os
-
-import PySimpleGUI as sg
+try:
+    import PySimpleGUI as sg
+except ImportError:
+    os.system('pip install PySimpleGUI')
+    import PySimpleGUI as sg
 
 # Lista de resoluções suportadas
 resolutions = ['800x600', '640x360', '1280x720', '1920x1080']
