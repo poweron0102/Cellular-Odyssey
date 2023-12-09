@@ -22,6 +22,14 @@ except ImportError:
 
 
 from settings import *
+
+pg.init()
+pg.font.init()
+if FULLSCREEN:
+    screen = pg.display.set_mode((1280, 720), pg.FULLSCREEN)
+else:
+    screen = pg.display.set_mode((1280, 720))
+
 from functions import *
 from in_game import *
 from scheduler import *
@@ -57,13 +65,7 @@ class Game:
     level: ModuleType
 
     def __init__(self):
-        pg.init()
-        pg.font.init()
-        if FULLSCREEN:
-            self.screen = pg.display.set_mode((1280, 720), pg.FULLSCREEN)
-        else:
-            self.screen = pg.display.set_mode((1280, 720))
-
+        self.screen = screen
         self.clock = pg.time.Clock()
         self.time = pg.time.get_ticks()
         self.lest_time = pg.time.get_ticks()

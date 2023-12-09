@@ -2,6 +2,13 @@ import random
 
 from main import *
 
+Animations = {
+    'blood': [
+        pg.transform.scale_by(pg.image.load(f'assets/sprites/animations/bloodfx{i}.png').convert_alpha(), 3)
+        for i in range(1, 6)
+    ],
+}
+
 
 class Sprite:
     def __init__(self, game, name, x, y, scale=0.5, shift=0.05, action=None):
@@ -25,7 +32,31 @@ class Sprite:
         self.height_shift = shift
         self.action = action
 
+        self.play_animation = False
+        self.time = 0
+        self.animation: list[pg.Surface] | None = None
+        self.animation_time: float = 0
+        self.animation_offset: tuple[int, int] = 0, 0
+
     def update(self):
+        if self.play_animation:
+            image: pg.Surface = self.image.copy()
+            self.time += self.game.delta_time
+            if self.time >= self.animation_time:
+                self.play_animation = False
+                self.time = 0
+            else:
+                frame: pg.Surface = self.animation[int(self.time / self.animation_time * len(self.animation))]
+                image.blit(
+                    frame,
+                    (
+                        self.animation_offset[0] - frame.get_width() / 2,
+                        self.animation_offset[1] - frame.get_height() / 2
+                    )
+                )
+        else:
+            image = self.image
+
         dx = self.x - self.player.x
         dy = self.y - self.player.y
 
@@ -41,13 +72,27 @@ class Sprite:
         view_dist = self.dist * math.cos(self.delta_ang)
         # dist = self.dist * math.cos(delta_ang)
         if -self.width / 2 < self.screen_x < RES[0] + (self.width / 2) and view_dist > 10:
-            item = view_dist, self.scale, self.image, self.height, self.screen_x, self.height_shift
+            item = view_dist, self.scale, image, self.height, self.screen_x, self.height_shift
             self.game.drawer.to_draw.append((3, item))
             self.game.sprite_handler.sprites_seeing.append(self)
 
-        if self.action and self.game.player.interact and self.dist < 64:
+        if self.action and self.game.player.interact and self.dist < Tile_size:
             self.action(self)
             self.action = None
+
+    def PlayAnimation(self, animation_name: str, time: float, offset=None):
+        self.play_animation = True
+        self.animation = Animations[animation_name]
+        self.animation_time = time
+        if offset is tuple:
+            self.animation_offset = offset
+        elif type(offset) is float:
+            self.animation_offset = (
+                random.randint(int(self.width * offset), int(self.width * (1 - offset))),
+                random.randint(int(self.height * offset), int(self.height * (1 - offset)))
+            )
+        else:
+            self.animation_offset = (0, 0)
 
 
 class SpriteHandler:

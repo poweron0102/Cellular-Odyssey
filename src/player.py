@@ -2,11 +2,11 @@ from main import *
 
 
 class PlayerType(Enum):
-    # name, speed, health, damage, attack_func, attack_cooldown, super_func, super_cooldown
-    Erythrocyte = 'Erythrocyte', 200, 200, 0, None, 1, None, 1
-    Neutrophil = 'Neutrophil', 200, 200, 20, attack_neutrophil, 0.5, super_neutrophil, 1
-    Macrophage = 'Macrophage', 150, 500, 50, None, 1, None, 5
-    BCell = 'BCell', 200, 200, 10, None, 0.1, None, 10
+    # name, speed, health, regenerate, damage, attack_func, attack_cooldown, super_func, super_cooldown
+    Erythrocyte = 'Erythrocyte', 200, 100, 0, 0, None, 1, None, 1
+    Neutrophil = 'Neutrophil', 200, 100, 5, 20, attack_neutrophil, 0.5, super_neutrophil, 1
+    Macrophage = 'Macrophage', 150, 250, 10, 50, None, 1, None, 5
+    BCell = 'BCell', 200, 75, 2, 10, None, 0.1, None, 10
 
 
 class Player:
@@ -18,10 +18,12 @@ class Player:
         self.ang = math.radians(ang)
 
         self.player_type = player_type
-        name, speed, health, damage, attack_func, attack_cooldown, super_func, super_cooldown = player_type.value
+        name, speed, health, regenerate, damage, attack_func, attack_cooldown, super_func, super_cooldown = player_type.value
+        # print(f"nome: {name}, speed: {speed}, health: {health}, regenerate: {regenerate}, damage: {damage}, attack_func: {attack_func}, attack_cooldown: {attack_cooldown}, super_func: {super_func}, super_cooldown: {super_cooldown}")
         self.name = name
         self.speed = speed
         self.health = health
+        self.regenerate = regenerate
         self.max_health = health
         self.damage = damage
 
@@ -40,7 +42,7 @@ class Player:
         self.keys = pg.key.get_pressed()
 
     def update(self):
-        self.health = min(self.health + self.game.delta_time, self.max_health)
+        self.health = min(self.health + (self.regenerate * self.game.delta_time), self.max_health)
         self.attack_cooldown = max(self.attack_cooldown - self.game.delta_time, 0)
         self.super_cooldown = max(self.super_cooldown - self.game.delta_time, 0)
 
@@ -85,10 +87,10 @@ class Player:
 
             if pg.mouse.get_pressed()[0] and self.attack_cooldown <= 0:
                 self.attack_func(self)
-                self.attack_cooldown = self.player_type.value[5]
+                self.attack_cooldown = self.player_type.value[6]
             elif pg.mouse.get_pressed()[2] and self.super_cooldown <= 0:
                 self.super_func(self)
-                self.super_cooldown = self.player_type.value[7]
+                self.super_cooldown = self.player_type.value[8]
 
             self.ang += mouse_move[0] * Mouse_sens
             if self.ang > 2 * math.pi:

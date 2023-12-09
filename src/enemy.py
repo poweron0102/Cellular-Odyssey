@@ -24,6 +24,10 @@ class EnemyType(Enum):
     )
 
 
+EnemySound = pg.mixer.Sound(f'assets/sounds/enemy.mp3')
+EnemySound.set_volume(VOLUME / 100)
+
+
 class Enemy(MovingSprite):
     def __init__(self, game, enemy: EnemyType, x, y, route=None):
         name, scale, shift, action = enemy.value
@@ -37,7 +41,7 @@ class Enemy(MovingSprite):
         self.speed = 150
 
         self.time = 0
-        self.attack_cooldown = 2
+        self.attack_cooldown = 1
 
     def seeing_player(self) -> bool:
         player_x, player_y = self.game.player.x, self.game.player.y
@@ -62,6 +66,8 @@ class Enemy(MovingSprite):
             if self.go_to(self.game.player.x, self.game.player.y, 92):
                 if self.attack_cooldown <= 0:
                     self.game.player.health -= self.damage
+
+                    EnemySound.play()
 
                     self.game.hud.set_face(1)
                     self.game.scheduler.add_dict('face', 8, self.game.hud.set_face, 0)

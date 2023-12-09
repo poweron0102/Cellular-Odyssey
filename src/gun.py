@@ -1,14 +1,14 @@
 from main import *
 
 pg.mixer.init()
-AttackSounds = [pg.mixer.Sound(f'assets/sounds/attc{i}.ogg') for i in range(4)]
-DathSounds = {
+AttackSounds = [pg.mixer.Sound(f'assets/sounds/attc{i}.ogg') for i in range(13)]
+DeathSounds = {
     'Neutrophil': pg.mixer.Sound(f'assets/sounds/neu_mata.ogg')
 }
 for sound in AttackSounds:
-    sound.set_volume(VOLUME)
-for sound in DathSounds.values():
-    sound.set_volume(VOLUME)
+    sound.set_volume(VOLUME / 100)
+for sound in DeathSounds.values():
+    sound.set_volume(VOLUME / 100)
 
 
 class Gun:
@@ -23,8 +23,8 @@ class Gun:
 
     def update(self):
         attack_progress = min(
-            0.5 - (self.game.player.attack_cooldown / self.game.player.player_type.value[5]),
-            0.5 - (self.game.player.super_cooldown / self.game.player.player_type.value[7])
+            0.5 - (self.game.player.attack_cooldown / self.game.player.player_type.value[6]),
+            0.5 - (self.game.player.super_cooldown / self.game.player.player_type.value[8])
         ) * 90
         image: pg.Surface = pg.transform.rotate(self._image, attack_progress)
 
@@ -38,10 +38,11 @@ def attack_neutrophil(player):
             if 427 < sprite.screen_x / SCALE_RES[0] < 853 and sprite.dist < Tile_size * 2:  # 1/3 da tela
                 sprite.health -= player.damage
                 random.choice(AttackSounds).play()
+                sprite.PlayAnimation('blood', 1, 0.35)
                 if sprite.health <= 0:
                     player.game.sprite_handler.sprites.remove(sprite)
                     if random.random() < 0.05:
-                        DathSounds['Neutrophil'].play()
+                        DeathSounds['Neutrophil'].play()
 
 
 def super_neutrophil(player):
@@ -50,8 +51,9 @@ def super_neutrophil(player):
             if 320 < sprite.screen_x / SCALE_RES[0] < 960 and sprite.dist < Tile_size:
                 sprite.health -= player.damage * 2
                 random.choice(AttackSounds).play()
+                sprite.PlayAnimation('blood', 1, 0.35)
                 if sprite.health <= 0:
                     player.game.sprite_handler.sprites.remove(sprite)
                     if random.random() < 0.05:
-                        DathSounds['Neutrophil'].play()
+                        DeathSounds['Neutrophil'].play()
 
