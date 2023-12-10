@@ -27,6 +27,7 @@ class Sprite:
         self.dist = 1
         self.delta_ang = 1
         self.screen_x = 1
+        self.screen_x_offset = 1
 
         self.scale = scale
         self.height_shift = shift
@@ -67,6 +68,7 @@ class Sprite:
 
         delta_rays = self.delta_ang / math.radians(FOV / (RES[0] / SCALE))
         self.screen_x = ((RES[0] / SCALE) / 2 + delta_rays) * SCALE
+        self.screen_x_offset = -image.get_width() / 2
 
         self.dist = math.hypot(dx, dy)
         view_dist = self.dist * math.cos(self.delta_ang)

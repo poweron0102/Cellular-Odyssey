@@ -139,6 +139,13 @@ def sprite(item, screen, game):
         screen_x - image.get_width() / 2,
         ((RES[1] - high * height_shift) / 2)
     ))
+    #pg.draw.line(
+    #    screen,
+    #    (255, 0, 0),
+    #    (screen_x / SCALE_RES[0], 0),
+    #    (screen_x / SCALE_RES[0], 600),
+    #    5
+    #)
 
 
 @add_draw_overwrite

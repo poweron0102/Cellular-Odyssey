@@ -6,6 +6,7 @@ def export(func):
     """
     Exporta a função para o escopo global com o nome E_<nome da função>
     """
+
     def new_func(*args, **kwargs):
         return func, args, kwargs
 
@@ -117,6 +118,9 @@ class Event:
         return False, True
 
     def look_at(self, ang, speed=1, min_dist=0.05):
+        """
+        Make the player look at the angle
+        """
         if self.game.player.ang > ang:
             if self.game.player.ang - ang < min_dist:
                 self.game.player.ang = ang
@@ -129,7 +133,23 @@ class Event:
             self.game.player.ang += speed * self.game.delta_time
         return False, True
 
+    def turn_to(self, ang, speed=1, min_dist=0.1):
+        """
+        Make the player turn to the angle
+        """
+        if -min_dist < ang < min_dist:
+            return True, True
+
+        move = speed * self.game.delta_time * sig(ang)
+        self.game.player.ang = angle_to_fist(self.game.player.ang + move)
+        self.events[self.current_event] = FuncArgs(self.turn_to, ang - move, speed, min_dist)
+
+        return False, True
+
     def look_to(self, x, y, speed=1, min_dist=0.05):
+        """
+        Make the play look at the position (x, y)
+        """
         dx, dy = x - self.game.player.x, y - self.game.player.y
         ang = angle_to_fist(math.atan2(dy, dx))
         if self.game.player.ang > ang:

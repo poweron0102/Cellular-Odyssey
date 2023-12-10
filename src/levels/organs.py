@@ -249,35 +249,6 @@ def init(in_game: 'InGame'):
     in_game.sprite_handler.add(Sprite(in_game, 'tree', *to_map(17, 17), scale=1.6, shift=1.2))
 
 
-    """
-    evt = Event(in_game)
-    evt.add([
-        (evt.sleep, 1),
-        (evt.MK_move, in_game.player, *to_map(14, 26.2)),
-        (evt.sleep, 1),
-        (evt.MK_dig, Dialogue(
-            2,
-            'Ah, i cant get lost again, i need to find the way to the lungs.',
-            'AE3803',
-        )),
-        (evt.MK_dig, Dialogue(
-            2,
-            'I think i find it, it should be this way.',
-            'AE3803',
-        )),
-        (evt.MK_move, in_game.player, *to_map(14, 23.5)),
-        (evt.MK_look_at, math.radians(90)),
-        (evt.setattr, in_game.player, 'enable_input', True),
-        (evt.wait, lambda: in_game.player.x <= 18 * Tile_size),
-        (evt.MK_dig, Dialogue(
-            2,
-            'What is this? A Pneumococos? Ah!!!!',
-            'AE3803',
-        )),
-    ], True)
-    """
-
-
 def loop(in_game: 'InGame'):
     for animated in AnimatedTextureSet:
         animated.update(in_game.delta_time)

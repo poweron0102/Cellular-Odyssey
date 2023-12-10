@@ -4,7 +4,7 @@ import levels.organs as organs
 
 
 def init(in_game: 'InGame'):
-    in_game.player = Player(in_game, *to_map(14, 25.8), 180, PlayerType.Neutrophil)
+    in_game.player = Player(in_game, *to_map(14, 25.8), 180, PlayerType.Macrophage)
     organs.init(in_game)
 
     routes = [

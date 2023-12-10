@@ -3,9 +3,9 @@ from main import *
 
 class PlayerType(Enum):
     # name, speed, health, regenerate, damage, attack_func, attack_cooldown, super_func, super_cooldown
-    Erythrocyte = 'Erythrocyte', 200, 100, 0, 0, None, 1, None, 1
+    Erythrocyte = 'Erythrocyte', 200, 100, 0, 0, attack_neutrophil, 1, attack_neutrophil, 1
     Neutrophil = 'Neutrophil', 200, 100, 5, 20, attack_neutrophil, 0.5, super_neutrophil, 1
-    Macrophage = 'Macrophage', 150, 250, 10, 50, None, 1, None, 5
+    Macrophage = 'Macrophage', 150, 250, 8, 50, attack_macrophage, 1.5, super_macrophage, 15
     BCell = 'BCell', 200, 75, 2, 10, None, 0.1, None, 10
 
 
@@ -19,7 +19,6 @@ class Player:
 
         self.player_type = player_type
         name, speed, health, regenerate, damage, attack_func, attack_cooldown, super_func, super_cooldown = player_type.value
-        # print(f"nome: {name}, speed: {speed}, health: {health}, regenerate: {regenerate}, damage: {damage}, attack_func: {attack_func}, attack_cooldown: {attack_cooldown}, super_func: {super_func}, super_cooldown: {super_cooldown}")
         self.name = name
         self.speed = speed
         self.health = health
