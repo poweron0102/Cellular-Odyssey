@@ -90,7 +90,9 @@ def init(in_game: 'InGame'):
             'todo',  # TODO:
             'neutropilo1'
         ), True),
-        (evt.sleep, 2.5),
+        (evt.sleep, 1),
+        (pneumococos.PlayAnimation, 'blood', 2, 0.3),
+        (evt.sleep, 2),
         (in_game.sprite_handler.remove_dict, pneumococos),
         (evt.dig, Dialogue(
             4,

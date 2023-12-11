@@ -3,12 +3,12 @@
 
 FastMath = True  # Gambiarra para ganhar speed
 
-RES = (640, 360)
+RES = (1280, 720)
 SCALE_RES = (RES[0]/1280, RES[1]/720)
 #  ['800x600', '640x360', '1280x720', '1920x1080']
 FULLSCREEN = False
-VOLUME = 25.0
-SCALE = 4
+VOLUME = 50.0
+SCALE = 2
 
 FPS = 60
 Mouse_sens = 0.005
