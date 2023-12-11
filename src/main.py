@@ -18,7 +18,7 @@ except ImportError:
     os.system('pip install pygame numpy numba')
     import pygame as pg
     import numpy as np
-    from numba import njit
+    from numba import njit, prange
 
 
 from settings import *

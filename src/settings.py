@@ -2,6 +2,7 @@
 # import pygame as pg
 
 FastMath = True  # Gambiarra para ganhar speed
+Parallel = True
 
 RES = (1280, 720)
 SCALE_RES = (RES[0]/1280, RES[1]/720)

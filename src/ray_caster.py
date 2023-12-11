@@ -1,4 +1,5 @@
 from main import *
+from numba import prange
 
 
 @njit(fastmath=FastMath)
@@ -90,7 +91,7 @@ def cast_walls(player_x, player_y, player_ang, world_map, is_render, walls_heigh
     return rays
 
 
-@njit(fastmath=FastMath)
+@njit(fastmath=FastMath, parallel=Parallel)
 def cast_floor(
         player_x, player_y, player_ang,
         walls_height,
@@ -98,7 +99,7 @@ def cast_floor(
         floor_textures, floor_textures_alpha,
         buffer_img
 ):
-    for id_x in range(RenderWidth):
+    for id_x in prange(RenderWidth):
         ray_angle = player_ang + np.deg2rad(id_x / (RenderWidth / FOV) - HalfFOV)
         sin, cos = np.sin(ray_angle), np.cos(ray_angle)
         fish = np.cos(np.deg2rad(id_x / (RenderWidth / FOV) - HalfFOV))
@@ -106,7 +107,7 @@ def cast_floor(
         c_height = HalfRenderHeight - walls_height[id_x//SCALE]//2
         # if c_height > HalfRenderHeight:
         #    c_height = HalfRenderHeight
-        for id_y in range(c_height):
+        for id_y in prange(c_height):
             n = Tile_size * (HalfRenderWidth / (HalfRenderHeight - id_y)) / fish
 
             ray_x = (player_x + (n * cos))
@@ -172,6 +173,8 @@ class RayCaster:
             self.game.map.texture_floor_alpha,
             pg.surfarray.pixels3d(self.game.screen)
         )
+        if self.game.player.debug:
+            cast_floor.parallel_diagnostics()
 
     def update(self):
         self.ray_size_python()
