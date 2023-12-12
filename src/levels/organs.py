@@ -165,14 +165,14 @@ def init(in_game: 'InGame'):
         (evt.dig, Dialogue(
             2,
             'Excuse me, that valve is exit only.',
-            'todo',  # TODO:
+            'chaves',
             'exitonly'
         ), True),
         (evt.IF, lambda: in_game.player.name == 'Erythrocyte'),
         (evt.dig, Dialogue(
             3,
             'Sorry, I didn\'t know. I still new here, I don\'t know any thing.',
-            'todo',  # TODO:
+            'AE3803',
             'soryidontknow'
         )),
         (evt.look_to, *to_map(14, 25), 2, 0.2),

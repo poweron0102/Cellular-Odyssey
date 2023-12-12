@@ -79,7 +79,7 @@ def init(in_game: 'InGame'):
             'Well now this is a delightful spot to my brother and I get really comfortable in here.'
             'It is not to hot, not to cold, and there is plenty of food to last more than a life cycle.'
             'This world belongs to us',
-            'todo',  # TODO: Pneumococos_0
+            'Pneumococos_0',
             'pneumosay'
         )),
         (in_game.sprite_handler.add_dict, neutrophil, neutrophil),
@@ -87,7 +87,7 @@ def init(in_game: 'InGame'):
         (evt.dig, Dialogue(
             4,
             'Die, you germ! Take that!',
-            'todo',  # TODO:
+            'Neutrophil_0',
             'neutropilo1'
         ), True),
         (evt.sleep, 1),
@@ -97,7 +97,7 @@ def init(in_game: 'InGame'):
         (evt.dig, Dialogue(
             4,
             'Here is white blood cell, Neutrophil division U1146. The invader germs has been eliminated.',
-            'todo',  # TODO:
+            'Neutrophil_0',
             'neutropilo2'
         )),
         (evt.dig, Dialogue(
@@ -108,7 +108,7 @@ def init(in_game: 'InGame'):
         (evt.dig, Dialogue(
             2,
             'Hi Red Blood Cell, I am Neutrophil, a white blood cell. I am here to protect you.',
-            'todo'  # TODO:
+            'Neutrophil_0'
         )),
         (evt.dig, Dialogue(
             4,
@@ -119,13 +119,13 @@ def init(in_game: 'InGame'):
         (evt.dig, Dialogue(
             4,
             'That was nothing, I was only carrying out my job. Ahh, sorry i mean, you are welcome.',
-            'todo',  # TODO:
+            'Neutrophil_0',
             'thatwasonlymyjob'
         )),
         (evt.dig, Dialogue(
             2,
             'They a going to the lungs. I should stop them.',
-            'todo'  # TODO:
+            'Neutrophil_0'
         )),
         (evt.dig, Dialogue(
             2,
@@ -135,7 +135,7 @@ def init(in_game: 'InGame'):
         (evt.dig, Dialogue(
             2,
             'Ok, the lungs are this way.',
-            'todo'  # TODO:
+            'Neutrophil_0'
         )),
         (evt.move, neutrophil, *to_map(15, 2), 20, 200),
 

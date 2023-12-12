@@ -173,8 +173,6 @@ class RayCaster:
             self.game.map.texture_floor_alpha,
             pg.surfarray.pixels3d(self.game.screen)
         )
-        if self.game.player.debug:
-            cast_floor.parallel_diagnostics()
 
     def update(self):
         self.ray_size_python()
