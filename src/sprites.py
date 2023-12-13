@@ -101,7 +101,7 @@ class SpriteHandler:
     def __init__(self, game):
         self.game: InGame = game
         self.sprites: list[Sprite] = []
-        self.sprites_seeing: list[Sprite] = []
+        self.sprites_seeing: list[Sprite | Enemy] = []
         self.sprites_dict: dict[Any, Sprite] = {}
 
     def update(self):

@@ -6,7 +6,7 @@ class PlayerType(Enum):
     Erythrocyte = 'Erythrocyte', 200, 100, 0, 0, attack_neutrophil, 1, attack_neutrophil, 1
     Neutrophil = 'Neutrophil', 200, 100, 5, 20, attack_neutrophil, 0.5, super_neutrophil, 1
     Macrophage = 'Macrophage', 150, 250, 8, 50, attack_macrophage, 1.5, super_macrophage, 15
-    BCell = 'BCell', 200, 75, 2, 10, None, 0.1, None, 10
+    BCell = 'BCell', 200, 75, 2, 10, attack_b_cell, 0.3, super_b_cell, 10
 
 
 class Player:
@@ -28,9 +28,11 @@ class Player:
 
         self.attack_func = attack_func
         self.attack_cooldown = attack_cooldown
+        self.attack_cooldown_r = attack_cooldown
 
         self.super_func = super_func
         self.super_cooldown = super_cooldown
+        self.super_cooldown_r = super_cooldown
 
         self.enable_input = enable_input
 
@@ -86,10 +88,10 @@ class Player:
 
             if pg.mouse.get_pressed()[0] and self.attack_cooldown <= 0:
                 self.attack_func(self)
-                self.attack_cooldown = self.player_type.value[6]
+                self.attack_cooldown = self.attack_cooldown_r
             elif pg.mouse.get_pressed()[2] and self.super_cooldown <= 0:
                 self.super_func(self)
-                self.super_cooldown = self.player_type.value[8]
+                self.super_cooldown = self.super_cooldown_r
 
             self.ang += mouse_move[0] * Mouse_sens
             if self.ang > 2 * math.pi:
