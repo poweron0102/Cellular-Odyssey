@@ -14,8 +14,8 @@ class Hud:
         ]
 
         # Variáveis do HUD
-        self.antigen = 40
-        self.antigen_max = 100
+        self.antigen = 0
+        self.antigen_max = 150
 
         self.health_color = (45, 212, 101)
         self.health_rect = (337, 18, 243, 50)
@@ -30,19 +30,32 @@ class Hud:
         self.current_face = face
 
     def update(self):
-        # img = pg.Surface((621, 171)).convert_alpha()
+        if self.game.player.name == 'Neutrophil':
+            self.antigen += self.game.delta_time
+            if self.antigen >= self.antigen_max:
+                self.antigen = 0
+                self.game.player.new_player(PlayerType.Macrophage)
+        elif self.game.player.name == 'Macrophage':
+            # antigen get added in the attack function
+            if self.antigen >= self.antigen_max:
+                self.antigen = 0
+                self.game.player.new_player(PlayerType.BCell)
+        elif self.game.player.name == 'BCell':
+            self.antigen += self.game.delta_time
+            if self.antigen >= self.antigen_max:
+                print("Parabens, você ganhou!!!!!!!!")
+                # todo: liberar a proxima fase
+                self.game.new_game('main_menu', (1280, 720))
+
+        if self.antigen >= self.antigen_max:
+            self.antigen = 0
+            self.game.player.new_player(PlayerType.Macrophage)
+
+
+        # Drawing HUD
         img = pg.Surface((621, 171), pg.SRCALPHA)
         # background
         pg.draw.rect(img, self.background_color, self.background_rect)
-
-        # health
-        rect = pg.Rect(
-            self.health_rect[0],
-            self.health_rect[1],
-            self.health_rect[2] * self.game.player.life_percent,
-            self.health_rect[3]
-        )
-        pg.draw.rect(img, self.health_color, rect)
 
         # health
         rect = pg.Rect(

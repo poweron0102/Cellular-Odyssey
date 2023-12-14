@@ -1,3 +1,5 @@
+import numpy as np
+
 from main import *
 
 
@@ -126,6 +128,7 @@ class Player:
 
         if keys[pg.K_m] and not self.keys[pg.K_m]:
             self.open_map = not self.open_map
+            self.new_player(PlayerType.Neutrophil)
 
         if keys[pg.K_x] and not self.keys[pg.K_x]:
             self.xray = not self.xray
@@ -139,6 +142,11 @@ class Player:
                 (2, self.game.map),
                 (1, self)
             ])
+
+    def new_player(self, player_type: PlayerType):
+        self.__init__(self.game, self.x, self.y, np.degrees(self.ang), player_type, True)
+        self.game.hud.__init__(self.game)
+        self.game.gun.__init__(self.game)
 
     @property
     def life_percent(self):

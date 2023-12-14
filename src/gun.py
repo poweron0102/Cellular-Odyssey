@@ -91,7 +91,7 @@ class Gun:
 def attack_neutrophil(player):
     for sprite in player.game.sprite_handler.sprites_seeing:
         if hasattr(sprite, 'enemy'):
-            if 427 < sprite.screen_x / SCALE_RES[0] < 853 and sprite.dist < Tile_size:
+            if 427 < sprite.screen_x / SCALE_RES[0] < 853 and sprite.dist < Tile_size * 1.5:
                 sprite.health -= player.damage
                 random.choice(AttackSounds).play()
                 sprite.PlayAnimation('blood', 1, 0.35)
@@ -104,7 +104,7 @@ def attack_neutrophil(player):
 def super_neutrophil(player):
     for sprite in player.game.sprite_handler.sprites_seeing:
         if hasattr(sprite, 'enemy'):
-            if 320 < sprite.screen_x / SCALE_RES[0] < 960 and sprite.dist < Tile_size:
+            if 320 < sprite.screen_x / SCALE_RES[0] < 960 and sprite.dist < Tile_size * 1.5:
                 sprite.health -= player.damage * 2
                 random.choice(AttackSounds).play()
                 sprite.PlayAnimation('blood', 1, 0.35)
@@ -123,6 +123,7 @@ def attack_macrophage(player):
                 sprite.PlayAnimation('blood', 1, 0.35)
                 if sprite.health <= 0:
                     player.game.sprite_handler.sprites.remove(sprite)
+                    player.game.hud.antigen += 10
                     if random.random() < 0.05:
                         OtherSounds['Macrophage0'].play()
 
