@@ -74,15 +74,29 @@ class Game:
         self.new_game("main_menu", supress=True)
         # pg.mouse.set_visible
 
-    def new_game(self, level: str, set_screen=None, supress=False):
+    def new_game(self, level: str, set_screen=None, supress=False, desalocate=False):
         if set_screen:
-            # print(level, set_screen)
+            print(level, set_screen)
             self.screen = pg.display.set_mode(set_screen)
             self.screen.blit(pg.transform.scale(pg.image.load("assets/gui/load.png"), set_screen), (0, 0))
             pg.display.flip()
             if FULLSCREEN and not pg.display.get_surface().get_flags() & pg.FULLSCREEN:
                 pg.display.toggle_fullscreen()
-
+        if desalocate:
+            try:
+                del self.player
+                del self.hud
+                del self.scheduler
+                del self.parallax
+                del self.dialogue_handler
+                del self.sprite_handler
+                del self.drawer
+                del self.action
+                del self.ray_caster
+                del self.map
+                del self.gun
+            except AttributeError:
+                pass
         self.level = import_module(f".{level}", "levels")
         self.run_time = 0
         self.level.init(self)

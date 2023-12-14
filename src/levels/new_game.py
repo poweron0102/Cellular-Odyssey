@@ -5,8 +5,11 @@ import levels.organs as organs
 
 def init(in_game: 'InGame'):
     in_game.player = Player(in_game, *to_map(14, 25.8), 180, PlayerType.Erythrocyte)
+    in_game.hud = Hud(in_game)
+    in_game.gun = Gun(in_game)
     organs.init(in_game)
     in_game.player.enable_input = False
+    in_game.map.tile_set[8].action = lambda x: in_game.new_game('Nvens')
 
     macrophage = Sprite(
         in_game,

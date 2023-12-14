@@ -12,8 +12,8 @@ class EnemyType(Enum):
     )
     Staphylococcus = (
         "Staphylococcus",
-        1,
-        1,
+        0.9,
+        0.7,
         None
     )
     Streptococcus = (
@@ -48,7 +48,7 @@ class Enemy(MovingSprite):
         sprite_x, sprite_y = self.x, self.y
         dx, dy = player_x - sprite_x, player_y - sprite_y
 
-        player_dist = (np.sqrt(dx ** 2 + dy ** 2) // Tile_size)
+        player_dist = (np.sqrt(dx ** 2 + dy ** 2) // Tile_size) + 1
         angle_ray = math.atan2(dy, dx)
         angle_ray = angle_to_fist(angle_ray)
 
@@ -56,6 +56,27 @@ class Enemy(MovingSprite):
         is_render = self.game.map.tiles_to_render
 
         return numba_seeing_player(sprite_x, sprite_y, player_dist, world_map, is_render, angle_ray)
+
+    def kill(self):
+        self.game.sprite_handler.sprites.remove(self)
+
+        if self.enemy is EnemyType.Staphylococcus:
+            if self.scale > 0.2:
+                for _ in range(2):
+                    self.game.sprite_handler.add(
+                        enemy := Enemy(
+                            self.game,
+                            EnemyType.Staphylococcus,
+                            self.x + random.uniform(-15, 15),
+                            self.y + random.uniform(-15, 15),
+                            route=self.walking_route
+                        )
+                    )
+                    enemy.scale = self.scale / 2
+                    enemy.health = self.health / 2
+                    enemy.damage = self.damage / 2
+                    enemy.speed = self.speed * 2
+                    enemy.height_shift = self.height_shift/2
 
     def update(self):
         self.attack_cooldown -= self.game.delta_time

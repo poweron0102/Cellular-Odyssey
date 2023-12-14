@@ -28,7 +28,7 @@ def init(in_menu: 'Game | Menu'):
             file_name,
             img_base='button_base_ico',
             img_hover='button_hover_ico',
-            func_click=lambda x: in_menu.new_game(*x), arg_click=(file_name, RES)
+            func_click=lambda x: in_menu.new_game(*x), arg_click=(file_name, RES, False, True)
         )
         bnt.img_base.blit(pg.image.load(f'assets/gui/{file_name}.png').convert_alpha(), (0, 4))
         bnt.img_hover.blit(pg.image.load(f'assets/gui/{file_name}.png').convert_alpha(), (0, 4))

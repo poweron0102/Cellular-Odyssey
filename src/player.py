@@ -128,7 +128,6 @@ class Player:
 
         if keys[pg.K_m] and not self.keys[pg.K_m]:
             self.open_map = not self.open_map
-            self.new_player(PlayerType.Neutrophil)
 
         if keys[pg.K_x] and not self.keys[pg.K_x]:
             self.xray = not self.xray

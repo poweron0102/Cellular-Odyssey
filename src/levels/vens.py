@@ -1,6 +1,8 @@
 #
 # This is the base file for all veias.
 #
+import random
+
 from main import *
 
 TileSet = [
@@ -13,12 +15,13 @@ TileSet = [
     Tile(True, True, 'blue', 7),
     Tile(True, True, 'blue', 8),
     Tile(False, False, 'green', 0, print, ('entrou!',)),  # add action
-    Tile(False, False, 'red', 0),  # add action added below
+    Tile(False, False, 'red', 0),
     Tile(False, True, 'black', 9),  # door L
     Tile(False, True, 'black', 10),  # door R
-    Tile(False, True, 'black', 11),  # door 1 block
+    Tile(False, True, 'black', 11),  # door 1 block # add action added below
     Tile(True, True, 'blue', 12),
     Tile(True, True, 'blue', 13),
+    Tile(True, False, [255, 200, 20], 0),  # plaquetinha fofa 15
 ]
 
 TextureSet = [
@@ -95,7 +98,7 @@ world_map = np.array([
         [0, 4, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 4, 0, 4, 4, 4, 4, 4, 4, 4, 0],
         [0, 4, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 4, 0, 4, 0, 0, 0, 0, 0, 4, 0],
         [0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 4, 0, 0, 0, 0, 0, 4, 0],
-        [0, 4, 0, 0, 0, 0, 4, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0, 0, 4, 0, 0, 4, 0, 0, 4, 0],
+        [0, 4, 0, 0, 0, 0, 4, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0, 0, 4, 4, 4, 4, 0, 0, 4, 0],
         [0, 4, 0, 0, 0, 0, 4, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0, 0, 4, 0, 0, 4, 0, 0, 4, 0],
         [0, 4, 0, 0, 0, 0, 4, 0, 0, 4, 4, 4, 0, 4, 0, 0, 0, 4, 4, 4, 4, 4, 4, 0, 0, 4, 0, 0, 4, 0],
         [0, 4, 4, 4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0, 0, 4, 0, 0, 4, 0, 0, 4, 0],
@@ -126,7 +129,7 @@ world_map = np.array([
         [0, 2, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 3, 0, 3, 1, 1, 1, 1, 1, 3, 0],
         [0, 2, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 2, 0, 2, 0, 0, 0, 0, 0, 2, 0],
         [0, 3, 1, 1, 1, 1, 3, 1, 3, 3, 1, 1, 1, 3, 1, 1, 1, 3, 1, 1, 3, 0, 2, 0, 0, 0, 0, 0, 2, 0],
-        [0, 2, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 2, 0],
+        [0, 2, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 3, 1, 1, 2, 0, 0, 2, 0],
         [0, 2, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 2, 0],
         [0, 2, 0, 0, 0, 0, 2, 0, 0, 3, 1, 1, 0, 2, 0, 0, 0, 3, 1, 1, 1, 1, 3, 0, 0, 2, 0, 0, 2, 0],
         [0, 3, 1, 1, 1, 1, 3, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 2, 0],
@@ -147,15 +150,50 @@ world_map = np.array([
 
 def init(in_game: 'InGame'):
     in_game.scheduler = Scheduler(in_game)
-    in_game.map = Map(in_game, world_map, TileSet, TextureSet, TextureFloor)
-    in_game.player = Player(in_game, *to_map(14, 25.5), 180, in_game.player.player_type)
+    in_game.map = Map(in_game, world_map[:], TileSet, TextureSet, TextureFloor)
+
+    cords = [(13.5, 13.5), (16.5, 11.5), (23.5, 16.5), (1.5, 1.5), (14.5, 25.5), (5.5, 11.5), (1.5, 22.5), (23.5, 3.5)]
+    start = random.choice(cords)
+    in_game.player = Player(in_game, *to_map(*start), 180, in_game.player.player_type)
+
     in_game.ray_caster = RayCaster(in_game)
     in_game.action = Actions(in_game)
     in_game.drawer = Drawer(in_game)
     in_game.dialogue_handler = DialogueHandler(in_game)
     in_game.parallax = Parallax(None, "ceu", in_game)
     in_game.sprite_handler = SpriteHandler(in_game)
-    in_game.hud = Hud(in_game)
+
+    plaqueta_cords = random.choice(cords)
+    while plaqueta_cords == start:
+        plaqueta_cords = random.choice(cords)
+
+    evt = Event(in_game)
+    evt.add([
+        (evt.dig, Dialogue(
+            7,
+            "Oh, i'm really sorry. but we are doing some construction.",
+            "platelet",
+            audio='construcao'
+        )),
+        (evt.dig, Dialogue(
+            2,
+            "No way we can snappy by?",
+            "ae3803pla",
+            audio='jeitodepassar'
+        )),
+        (evt.dig, Dialogue(
+            10,
+            "No way at all. You see, what happened was there as a bit of trouble so construction get delayed.\
+             I gest the delivery people had made a big mistake.",
+            "platelet",
+            audio='dellead'
+        )),
+        (evt.setattr, None, 'action', evt.run),
+        (evt.restart, False),
+    ])
+    in_game.sprite_handler.add(Sprite(in_game, 'platelet', *to_map(*plaqueta_cords), action=evt.run))
+    x, y = map(int, plaqueta_cords)
+    in_game.map.world_wall[x][y] = 15
 
 
 def loop(in_game: 'InGame'):
@@ -172,3 +210,4 @@ def loop(in_game: 'InGame'):
 
     in_game.drawer.update()
     in_game.hud.update()
+    in_game.gun.update()

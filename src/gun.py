@@ -96,7 +96,7 @@ def attack_neutrophil(player):
                 random.choice(AttackSounds).play()
                 sprite.PlayAnimation('blood', 1, 0.35)
                 if sprite.health <= 0:
-                    player.game.sprite_handler.sprites.remove(sprite)
+                    sprite.kill()
                     if random.random() < 0.05:
                         OtherSounds['Neutrophil'].play()
 
@@ -109,7 +109,7 @@ def super_neutrophil(player):
                 random.choice(AttackSounds).play()
                 sprite.PlayAnimation('blood', 1, 0.35)
                 if sprite.health <= 0:
-                    player.game.sprite_handler.sprites.remove(sprite)
+                    sprite.kill()
                     if random.random() < 0.05:
                         OtherSounds['Neutrophil'].play()
 
@@ -122,7 +122,7 @@ def attack_macrophage(player):
                 random.choice(AttackSounds).play()
                 sprite.PlayAnimation('blood', 1, 0.35)
                 if sprite.health <= 0:
-                    player.game.sprite_handler.sprites.remove(sprite)
+                    sprite.kill()
                     player.game.hud.antigen += 10
                     if random.random() < 0.05:
                         OtherSounds['Macrophage0'].play()
@@ -164,7 +164,7 @@ def attack_b_cell(player):
                 random.choice(AttackSounds).play()
                 sprite.PlayAnimation('blood', 1, 0.35)
                 if sprite.health <= 0:
-                    player.game.sprite_handler.sprites.remove(sprite)
+                    sprite.kill()
                     if random.random() < 0.05:
                         OtherSounds['BCell0'].play()
                 else:  # se o inimigo morrer, pode atacar outro

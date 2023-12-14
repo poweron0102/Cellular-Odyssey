@@ -156,8 +156,7 @@ def init(in_game: 'InGame'):
     in_game.dialogue_handler = DialogueHandler(in_game)
     in_game.parallax = Parallax(None, "ceu", in_game)
     in_game.sprite_handler = SpriteHandler(in_game)
-    in_game.hud = Hud(in_game)
-    in_game.gun = Gun(in_game)
+
 
     evt = Event(in_game)
     evt.add([
@@ -182,35 +181,6 @@ def init(in_game: 'InGame'):
         (evt.restart, False)
     ])
     TileSet[9].action = evt.run
-    TileSet[8].action = lambda x: in_game.new_game('vens')
-
-    """
-    evt = Event(in_game)
-    evt.add([
-        (evt.MK_dig, Dialogue(
-            7,
-            "Oh, i'm really sorry. but we are doing some construction.",
-            "platelet",
-            audio='construcao'
-        )),
-        (evt.MK_dig, Dialogue(
-            2,
-            "No way we can snappy by?",
-            "ae3803pla",
-            audio='jeitodepassar'
-        )),
-        (evt.MK_dig, Dialogue(
-            10,
-            "No way at all. You see, what happened was there as a bit of trouble so construction get delayed.\
-             I gest the delivery people had made a big mistake.",
-            "platelet",
-            audio='dellead'
-        )),
-        (evt.setattr, None, 'action', evt.run),
-        (evt.restart, False),
-    ])
-    in_game.sprite_handler.add(Sprite(in_game, 'platelet', *to_map(10.5, 11.5), action=evt.run))
-    """
 
     routes = [
         [to_map(13.5, 26), to_map(12.5, 25.5), to_map(12.5, 15.5), to_map(7.5, 15.5), to_map(7.5, 17)],
